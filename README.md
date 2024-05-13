@@ -3,8 +3,9 @@ SoftHSM is an implementation of a cryptographic store accessible through a PKCS 
 https://www.opendnssec.org/softhsm/
 
 
-Installation
-Windows
+# Installation
+
+## Windows
 
 OpenSC; OpenSC provides a set of libraries and utilities to work with smart cards. Its main focus is on cards that support cryptographic operations, and facilitate their use in security applications such as authentication, mail encryption and digital signatures.
 
@@ -17,12 +18,12 @@ SoftHSM
 https://github.com/disig/SoftHSM2-for-Windows
 https://dist.opendnssec.org/source/
 
-Ubuntu 22.04.4 LTS
+## Ubuntu 22.04.4 LTS
 
 Dependencies
 
-g++
-libssl-dev
+< g++
+libssl-dev >
 
 run the following the command in a terminal
 sudo apt install g++ libssl-dev
