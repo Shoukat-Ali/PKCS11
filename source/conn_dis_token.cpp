@@ -269,3 +269,32 @@ int disconnect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSessio
 	}
 	return 0;
 }
+
+
+
+/**
+ * The functions attempts to perform cleanup by freeing memory/resources
+ * First, decrements the reference count on SoftHSM library handle
+ * Second, assigning null to the pointer to the list of PKCS #11 function
+ * Lastily, removing/clearing the user PIN
+ * 
+ * The function does not return anything 
+*/
+void free_Resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN)
+{
+	cout << "Clean up and free the resources\n";
+	/**
+	 * int dlclose(void *handle); 
+	 * The function dlclose() decrements the reference count on the dynamic library handle. 
+	 * If the reference count drops to zero and no other loaded libraries use symbols in it, 
+	 * then the dynamic library is unloaded.
+	 * The function dlclose() returns 0 on success, and nonzero on error. 
+	*/
+	if (dlclose(libHandle)) {
+		cout << "Error, dlclose() on softHSM library reference count\n";
+	}
+    funclistPtr = NULL_PTR;
+	
+    // Removes all characters from the usrPIN string and all pointers, references, and iterators are invalidated. 
+    usrPIN.clear();
+}
