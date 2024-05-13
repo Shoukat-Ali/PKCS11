@@ -34,11 +34,10 @@ sudo apt install g++ libssl-dev
 
 It is assumed that SoftHSM sources is download and/or untar as required
 Next run the following commands
-./configure --prefix=/where/to/install/SoftHSM
 
 ```
+./configure --prefix=/where/to/install/SoftHSM
 make or make -j
-
 sudo make install
 ```
 
