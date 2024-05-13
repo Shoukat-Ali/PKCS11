@@ -18,9 +18,9 @@
 #define CONN_DISCONN_HPP
 
 #include <string>
-#include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -Iinclude
+#include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 
-int check_Operation(CK_RV rv, const char* message);
+int check_Operation(const CK_RV rv, const char* message);
 
 int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
