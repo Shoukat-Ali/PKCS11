@@ -212,3 +212,60 @@ int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, 
 
 	return 0;
 }
+
+
+/**
+ * This function attempts to disconnects from a token.
+ * First, logs out the user from the token/slot; 
+ * Second, closes the current session and; 
+ * Finally, finalizes the SoftHSM library to indicate that application is finished with the Cryptoki library
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int disconnect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
+{
+	/**
+	 * CK_RV C_Logout(CK_SESSION_HANDLE hSession);
+	 * 
+	 * C_Logout logs a user out from a token. hSession is the session’s handle.
+	 * If there are any active cryptographic or object-finding operations in an application’s
+	 * session, and then C_Logout is successfully executed by that application, it may or may
+	 * not be the case that those operations are still active. Therefore, before logging out, 
+	 * any active operations should be finished.
+	*/
+	if (check_Operation(funclistPtr->C_Logout(hSession), "C_Logout")) {
+		// Operation failed
+		return 4;
+	}
+	
+	/**
+	 * CK_RV C_CloseSession(CK_SESSION_HANDLE hSession);
+	 * 
+	 * C_CloseSession closes a session between an application and a token. 
+	 * hSession is the session’s handle.
+	 * 
+	 * When a session is closed, all session objects created by the session are destroyed
+	 * automatically, even if the application has other sessions “using” the objects
+	*/
+	if (check_Operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion")) {
+		// Operation failed
+		return 4;
+	}
+	
+	/**
+	 * CK_RV C_Finalize(CK_VOID_PTR pReserved);
+	 * 
+	 * C_Finalize is called to indicate that an application is finished with the Cryptoki library.
+	 * It should be the last Cryptoki call made by an application. The pReserved parameter is
+	 * reserved for future versions; for this version, it should be set to NULL_PTR 
+	 * (if C_Finalize is called with a non-NULL_PTR value for pReserved, it should return the
+	 * value CKR_ARGUMENTS_BAD.
+	 * If several applications are using Cryptoki, each one should call C_Finalize. Each
+	 * application’s call to C_Finalize should be preceded by a single call to C_Initialize;
+	*/
+	if (check_Operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize")) {
+		// Operation failed
+		return 4;
+	}
+	return 0;
+}
