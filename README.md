@@ -22,8 +22,8 @@ https://dist.opendnssec.org/source/
 
 Dependencies
 
-< g++
-libssl-dev >
+> g++
+> libssl-dev
 
 run the following the command in a terminal
 sudo apt install g++ libssl-dev
