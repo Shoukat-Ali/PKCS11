@@ -13,7 +13,8 @@ https://github.com/OpenSC/OpenSC
 
 ## SoftHSM
 
-https://github.com/disig/SoftHSM2-for-Windows
+SoftHSM is an implementation of a cryptographic store accessible through a PKCS #11 interface. You can use it to explore PKCS #11 without having a Hardware Security Module. It is being developed as a part of the OpenDNSSEC project. The SoftHSM source can be found using the following link.
+
 https://dist.opendnssec.org/source/
 
 ## Ubuntu 22.04.4 LTS
@@ -44,16 +45,18 @@ After SoftHSM successful installation, then
 sudo apt install opensc
 ```
 
-Next include the SoftHSM library location to PATH environment variable as follows
-open .profile file (user home directory) in any text editor of your choice then added the following line at the end of file
+Next include the SoftHSM library location to PATH environment variable as follows. Open .profile file (user home directory) in any text editor of your choice then added the following line at the end of file
 
 ```
 export PATH=$PATH:/where/SoftHSM/is/installed/bin
 ```
 
 To confirm the installation was success, run the following commands in a terminal
+```
 softhsm2-util
-The output shows the softHSM utility manual
+```
+
+The output shows the softHSM utility manual.
 
 Run the following command to see the list of slots. Note that for the first time, there will be an un-initialized slot only e.g., slot 0
 ```
@@ -72,8 +75,7 @@ To confirm slot initialization, run the following command and check its output
 softhsm2-util --show-slots
 ```
 
-If the OpenSC installation was successful, then you should be able to see the pkcs11-tool utility.
-Simply run the following command to check pkcs11-tool manuel
+If the OpenSC installation was successful, then you should be able to see the pkcs11-tool utility. Simply run the following command to check pkcs11-tool manuel
 ```
 man pkcs11-tool
 ```
