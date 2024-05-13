@@ -1,19 +1,17 @@
-SoftHSM is an implementation of a cryptographic store accessible through a PKCS #11 interface. You can use it to explore PKCS #11 without having a Hardware Security Module. It is being developed as a part of the OpenDNSSEC project.
+This is an attempt to show some of the PKCS #11 interfaces using the SoftHSM library. All the programs are written in C++ programming language. For more details on SoftHSM, please visit the following link.
 
 https://www.opendnssec.org/softhsm/
 
-
 # Installation
 
-## Windows
-
-OpenSC; OpenSC provides a set of libraries and utilities to work with smart cards. Its main focus is on cards that support cryptographic operations, and facilitate their use in security applications such as authentication, mail encryption and digital signatures.
+## OpenSC 
+It provides a set of libraries and utilities to work with smart cards. Its main focus is on cards that support cryptographic operations, and facilitate their use in security applications such as authentication, mail encryption and digital signatures.
 
 Contains utilities for crypto functions
 https://github.com/OpenSC/OpenSC
 
 
-SoftHSM
+## SoftHSM
 
 https://github.com/disig/SoftHSM2-for-Windows
 https://dist.opendnssec.org/source/
@@ -32,8 +30,7 @@ run the following the command in a terminal
 sudo apt install g++ libssl-dev
 ```
 
-It is assumed that SoftHSM sources is download and/or untar as required
-Next run the following commands
+It is assumed that SoftHSM sources is download and/or untar as required. Next run the following commands
 
 ```
 ./configure --prefix=/where/to/install/SoftHSM
