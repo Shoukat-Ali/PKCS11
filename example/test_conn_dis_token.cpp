@@ -5,7 +5,7 @@
  * 		make
  * 
  * To build the program directly, one can run the following command
- *      g++ -Wall -Werror test_conn_dis_token.cpp conn_dis_token.cpp -o prog -I../include
+ *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp -o prog -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
