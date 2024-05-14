@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdlib.h>
 #include <limits>
 #include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
 #include "../header/conn_dis_token.hpp"
@@ -11,10 +10,11 @@ using std::cout, std::cin, std::endl;
 
 /**
  * The function checks if a requested Cryptoki (PKCS #11) operation was a success or not.
+ * 
  * rv represents the CK_RV value returned by Cryptoki function
  * message represent the Cryptoki operation 
  * 
- * If the CK_RV value is CKR_OK, then success and 0 is returned. 
+ * If the CK_RV value is CKR_OK, then the operation was success and 0 is returned. 
  * Otherwise, non-zero integer is returned on failure.
  *  
 */
@@ -32,10 +32,9 @@ int check_Operation(const CK_RV rv, const char* message)
 
 /**
  * The function attempts to load SoftHSM library in order to use PKCS# 11 functions/API.
- * The function asks the user to input the full path to SoftHSM library
  * 
  * libHandle is a void pointer for SoftHSM library handle
- * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST
+ * funclistPtr is an alias of pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  *  
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
@@ -112,9 +111,14 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 
 /**
  * This function attempts to connect to a token. 
+ * 
  * First, it initializes the Cryptoki/SoftHSM library; 
  * Second, attempts to open a new session by taking solt ID from the user;
  * Finally, attempts to perform login based on user inputs.
+ * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias to session
+ * usrPIN is an alias to user PIN as string
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */

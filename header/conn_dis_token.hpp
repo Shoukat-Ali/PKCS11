@@ -1,7 +1,7 @@
 /**
- * This program is an attempt to show the followings
+ * This program is an attempt to show the following operations
  * 
- *      1. Load the HSM library by setting an environment variable HSM_PKCS_11 in order to use PKCS#11 library
+ *      1. Load the HSM library by setting an environment variable SOFTHSM2_LIB in order to use PKCS #11 functions
  *      2. Connect to valid slot using the followings
  *          i.      C_Initialize() 
  *          ii.     C_OpenSession() 
