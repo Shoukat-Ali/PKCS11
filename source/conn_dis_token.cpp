@@ -4,7 +4,9 @@
 #include "../header/conn_dis_token.hpp"
  
 
-using std::cout, std::cin, std::endl;
+using std::cout; 
+using std::cin;
+using std::endl;
 
 
 
