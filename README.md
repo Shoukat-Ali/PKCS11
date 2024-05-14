@@ -1,4 +1,4 @@
-This is an attempt to show some of the PKCS #11 interfaces using the SoftHSM library. All the programs are written in C++ programming language. For more details on SoftHSM, please visit the following link.
+This is an attempt to show some of the PKCS #11 interfaces using the SoftHSM library. All the programs are written in C\+\+ programming language. For more details on SoftHSM, please visit the following link.
 
 https://www.opendnssec.org/softhsm/
 
