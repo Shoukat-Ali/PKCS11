@@ -19,34 +19,31 @@ https://dist.opendnssec.org/source/
 
 ## Ubuntu 22.04.4 LTS
 
-Dependencies
+The programs in this repository required the following tools
 
 ```
 g++
 libssl-dev
 ```
 
-run the following the command in a terminal
+To install the above dependencies, run the following the command in a terminal
 ```
 sudo apt install g++ libssl-dev
 ```
 
-It is assumed that SoftHSM sources is download and/or untar as required. Next run the following commands
-
+It is assumed that SoftHSM sources is downloaded and/or untarred as required. Next run the following commands one-by-one
 ```
 ./configure --prefix=/where/to/install/SoftHSM
 make or make -j
 sudo make install
 ```
 
-After SoftHSM successful installation, then
-
+After the SoftHSM successful installation, then install OpenSC by running the following command
 ```
 sudo apt install opensc
 ```
 
 Next include the SoftHSM library location to PATH environment variable as follows. Open .profile file (user home directory) in any text editor of your choice then added the following line at the end of file
-
 ```
 export PATH=$PATH:/where/SoftHSM/is/installed/bin
 ```
@@ -68,7 +65,7 @@ To initialize a token slot, one can run the following command
 softhsm2-util --init-token --slot <slot_number> --label <text>
 ```
 
-After running the command above correctly, you'll be asked to enter Security Officer (SO) and user PIN, respectively
+After running the command above correctly, you'll be asked to enter Security Officer (SO) and user PIN, respectively.
 
 To confirm slot initialization, run the following command and check its output
 ```
