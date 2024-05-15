@@ -29,7 +29,7 @@
 
 
 #include <iostream>
-#include "../header/conn_dis_token.hpp"
+#include "../header/slots_list.hpp"
 
 using std::cout;
 
@@ -46,7 +46,7 @@ int main()
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		
 	}
-	free_Resource(libHandle, funclistPtr, usrPIN);
+	free_Resource(libHandle, funclistPtr);
 	
 	return retVal;
 }
