@@ -151,7 +151,7 @@ int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, 
 	}
 
 	
-	cout << "Please enter the slot ID (integer): ";
+	cout << "\tPlease enter the slot ID (integer): ";
 	cin >> slotID;
 	if (!cin.good()) {
 		cout << "Error, slot ID is not integer\n";
@@ -188,7 +188,7 @@ int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, 
 	}
 	
 	
-	cout << "Please enter the User PIN: ";
+	cout << "\tPlease enter the User PIN: ";
 	cin >> usrPIN;
 	
 	/**
