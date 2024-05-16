@@ -1,5 +1,4 @@
 #include <iostream>
-#include <limits>
 #include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
 #include "../header/slots_list.hpp"
  
@@ -20,7 +19,7 @@ using std::endl;
  * Otherwise, non-zero integer is returned on failure.
  *  
 */
-int check_Operation(const CK_RV rv, const char* message)
+int check_operation(const CK_RV rv, const char* message)
 {
 	if (rv != CKR_OK) {
 		cout << "Error, " << message << " failed with : " << rv << endl
@@ -62,7 +61,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 		return 3;
 	}
 	
-    return check_Operation(C_GetFunctionList(&funclistPtr), "C_GetFunctionList");
+    return check_operation(C_GetFunctionList(&funclistPtr), "C_GetFunctionList()");
 	
 }
 
@@ -70,14 +69,13 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 
 
 /**
- * The functions attempts to perform cleanup by freeing memory/resources
+ * The functions attempts to perform clean-up by freeing memory/resources
  * First, decrements the reference count on SoftHSM library handle
  * Second, assigning null to the pointer to the list of PKCS #11 function
- * Lastily, removing/clearing the user PIN
  * 
  * The function does not return anything 
 */
-void free_Resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN)
+void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
 	cout << "Clean up and free the resources\n";
 	
@@ -86,6 +84,73 @@ void free_Resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
 	}
     funclistPtr = NULL_PTR;
 	
-    // Removes all characters from the usrPIN string and all pointers, references, and iterators are invalidated. 
-    usrPIN.clear();
+}
+
+
+/**
+ * The function attempts to get the list of all detected slots
+ * and display some information about those slots
+ * 
+ * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr)
+{
+	CK_ULONG slotsCount;
+	CK_SLOT_ID_PTR slotlistPtr = NULL_PTR;
+	int retVal = 0;
+
+	/**
+	 * CK_RV C_GetSlotList(CK_BBOOL tokenPresent, CK_SLOT_ID_PTR pSlotList, CK_ULONG_PTR pulCount);
+	 * 
+	 * C_GetSlotList() is used to obtain a list of slots in the system. 
+	 * 
+	 * tokenPresent indicates whether the list obtained includes only those slots 
+	 * with a token present (CK_TRUE), or all slots (CK_FALSE);
+	 * pulCount points to the location that receives the number of slots.
+	 * There are two ways for an application to call C_GetSlotList:
+	 * 			1. If pSlotList is NULL_PTR, then all that C_GetSlotList does is return (in *pulCount)
+	 * 				the number of slots, without actually returning a list of slots. The contents of the
+	 * 				buffer pointed to by pulCount on entry to C_GetSlotList has no meaning in this case,
+	 * 				and the call returns the value CKR_OK.
+	 * 			2. If pSlotList is not NULL_PTR, then *pulCount must contain the size (in terms of
+	 * 				CK_SLOT_ID elements) of the buffer pointed to by pSlotList. If that buffer is large
+	 * 				enough to hold the list of slots, then the list is returned in it, 
+	 * 				and CKR_OK is returned. If not, then the call to C_GetSlotList returns the value
+	 * 				CKR_BUFFER_TOO_SMALL. In either case, the value *pulCount is set to hold the
+	 * 				number of slots.
+	 * 
+	 * Notes: C_GetSlotList() reads information from the memory when C_initialize() was called.
+	 * Therefore, to read updated list of slots, 
+	 * C_GetSlotList() should call C_Initialize() and C_Finalize() on very call.
+	*/
+
+	retVal = check_operation(funclistPtr->C_GetSlotList(CK_TRUE, NULL_PTR, &slotsCount), "C_GetSlotList()");
+	if (retVal == 0) {
+		cout << "No. of slots detected: " << slotsCount << endl;
+		slotlistPtr = new CK_SLOT_ID[slotsCount];
+		
+		retVal = check_operation(funclistPtr->C_GetSlotList(CK_TRUE, slotlistPtr, &slotsCount), "C_GetSlotList()");
+		if (!retVal) {
+			// Operation successful
+			/**
+			 * CK_RV C_GetSlotInfo(CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo);
+			 * 
+			 * C_GetSlotInfo() obtains information about a particular slot in the system. 
+			 * 
+			 * slotID is the ID of the slot 
+			 * pInfo points to the location that receives the slot information.
+			 * */
+
+			for (int i = 0; i < slotsCount; ++i) {
+				// Displaying some information of the detected slots
+				cout << slotlistPtr[i] << endl;
+				retVal = check_operation(C_GetSlotInfo(slotlistPtr[i], CK_SLOT_INFO_PTR pInfo), "C_GetSlotInfo()");
+				if (!retVal) {}
+		}
+		delete[] slotlistPtr;
+	}
+	return retVal;
+	
 }
