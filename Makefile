@@ -16,8 +16,16 @@ SRC_CONNDIS = $(addprefix $(SRC_DIR),conn_dis_token.cpp)
 MAIN_CONNDIS = $(addprefix $(MAIN_DIR),test_conn_dis_token.cpp)
 
 
+# Slot and Token information
+HDR_STLIST = $(addprefix $(HEADER_DIR),slots_token_list.hpp)
+SRC_STLIST = $(addprefix $(SRC_DIR),slots_token_list.cpp)
+MAIN_STLIST = $(addprefix $(MAIN_DIR),test_slots_token_list.cpp)
+
+
+
 #Object files
 OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o
+OBJS_STLIST = main_STLIST.o src_STLIST.o
 
 
 # Connect to and disconnect from a token
@@ -31,6 +39,19 @@ test_ConnDis: $(OBJS_CONNDIS)
 	$(CXX) $^ -o $@
 
 
+# Slot and Token information files
+main_STLIST.o: $(MAIN_STLIST)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+src_STLIST.o: $(SRC_STLIST) $(HDR_STLIST)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+test_STList: $(OBJS_STLIST)
+	$(CXX) $^ -o $@
+
+
+
 .PHONY : clean
 clean:
-	rm test_ConnDis $(OBJS_CONNDIS)
+#	rm test_ConnDis $(OBJS_CONNDIS)
+	rm test_STList $(OBJS_STLIST)

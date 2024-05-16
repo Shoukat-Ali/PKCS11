@@ -11,13 +11,13 @@
  *      /opt/softhsm2/var/lib/softhsm
  * 
  * To build the program using Makefile, run the following command
- * 		make test_SlotList
+ * 		make test_STList
  * 
  * If Makefile was used to build, then run to following command to remove the binary and object files
  *      make clean
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_slots_list.cpp ../source/slots_list.cpp -o test_SlotList -I../include
+ *      g++ -Wall -Werror test_slots_list.cpp ../source/slots_list.cpp -o test_STList -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
