@@ -119,7 +119,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
  * Finally, attempts to perform login based on user inputs.
  * 
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
- * hSession is an alias to session
+ * hSession is an alias of session ID/handle
  * usrPIN is an alias to user PIN as string
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
@@ -226,6 +226,9 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
  * Second, closes the current session and; 
  * Finally, finalizes the SoftHSM library to indicate that application is finished with the Cryptoki library
  * 
+ * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
@@ -283,6 +286,10 @@ int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
  * First, decrements the reference count on SoftHSM library handle
  * Second, assigning null to the pointer to the list of PKCS #11 function
  * Lastily, removing/clearing the user PIN
+ * 
+ * libHandle is an alias of void pointer for SoftHSM library handle
+ * funclistPtr is an alias of pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * usrPIN is an alias of user PIN
  * 
  * The function does not return anything 
 */
