@@ -92,7 +92,7 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
  * slotID is the ID of the slot
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int display_slot_info(const CK_SLOT_ID slotID)
+int display_slot_info(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SLOT_ID slotID)
 {
 	int retVal = 0;
 	/**
@@ -116,9 +116,9 @@ int display_slot_info(const CK_SLOT_ID slotID)
 	 * slotID is the ID of the slot 
 	 * pInfo points to the location that receives the slot information.
 	 * */
-	retVal = check_operation(C_GetSlotInfo(slotID, &slotInfo), "C_GetSlotInfo()");
+	retVal = check_operation(funclistPtr->C_GetSlotInfo(slotID, &slotInfo), "C_GetSlotInfo()");
 	if (!retVal) {
-		cout << "For the slot ID: " 		<< slotID << "we have," << endl
+		cout << "For the slot ID: " 		<< slotID << endl
 				<< "\tDescription : " 		<< slotInfo.slotDescription << endl
 				<< "\tManufacturer ID: " 	<< slotInfo.manufacturerID << endl;
 	}
@@ -132,7 +132,7 @@ int display_slot_info(const CK_SLOT_ID slotID)
  * slotID is the ID of the slot
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int display_token_info(const CK_SLOT_ID slotID)
+int display_token_info(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SLOT_ID slotID)
 {
 	int retVal = 0;
 	/**
@@ -169,7 +169,7 @@ int display_token_info(const CK_SLOT_ID slotID)
 	 * slotID is the ID of the token’s slot
 	 * pInfo points to the location that receives the token information.
 	*/
-	retVal = check_operation(C_GetTokenInfo(slotID, &tokenInfo), "C_GetTokenInfo()");
+	retVal = check_operation(funclistPtr->C_GetTokenInfo(slotID, &tokenInfo), "C_GetTokenInfo()");
 	if (!retVal) {
 		cout << "For the token, we have" 			<< endl
 				<< "\tLabel : " 					<< tokenInfo.label << endl
@@ -234,10 +234,10 @@ int display_all_slot_token(const CK_FUNCTION_LIST_PTR funclistPtr)
 		retVal = check_operation(funclistPtr->C_GetSlotList(CK_TRUE, slotlistPtr, &slotsCount), "C_GetSlotList()");
 		if (!retVal) {
 			// Operation successful
-			for (int i = 0; i < slotsCount; ++i) {
+			for (unsigned long i = 0; i < slotsCount; ++i) {
 				// Displaying some information about the detected slots and tokens
-				retVal = display_slot_info(slotlistPtr[i]);
-				retVal = display_token_info(slotlistPtr[i]);
+				retVal = display_slot_info(funclistPtr, slotlistPtr[i]);
+				retVal = display_token_info(funclistPtr, slotlistPtr[i]);
 				if (retVal) {
 					// operatioin failed
 					i = slotsCount;

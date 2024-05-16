@@ -38,13 +38,12 @@ int main()
 	void *libHandle = nullptr;
 	
 	CK_FUNCTION_LIST_PTR funclistPtr = NULL_PTR;
-	CK_SESSION_HANDLE hSession = 0; 
 	
 	if (!(retVal = load_library_HSM(libHandle, funclistPtr))) {
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		retVal = display_all_slot_token(funclistPtr);
 	}
-	
+
 	free_resource(libHandle, funclistPtr);
 	
 	return retVal;

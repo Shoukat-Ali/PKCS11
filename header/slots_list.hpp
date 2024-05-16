@@ -8,8 +8,8 @@
 */
 
 
-#ifndef SLOTS_LIST_HPP
-#define SLOTS_LIST_HPP
+#ifndef SLOTS_TOKEN_LIST_HPP
+#define SLOTS_TOKEN_LIST_HPP
 
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 
