@@ -97,9 +97,53 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 */
 int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr)
 {
+	int retVal = 0;
 	CK_ULONG slotsCount;
 	CK_SLOT_ID_PTR slotlistPtr = NULL_PTR;
-	int retVal = 0;
+	
+	/**
+	 * CK_SLOT_INFO provides information about a slot and is defined as follows:
+	 * 
+	 * 		typedef struct CK_SLOT_INFO {
+	 * 				CK_UTF8CHAR slotDescription[64];
+	 * 				CK_UTF8CHAR manufacturerID[32];
+	 * 				CK_FLAGS flags;
+	 * 				CK_VERSION hardwareVersion;
+	 * 				CK_VERSION firmwareVersion;
+	 * 		} CK_SLOT_INFO;
+	*/
+	CK_SLOT_INFO slotInfo;
+
+	/**
+	 * CK_TOKEN_INFO provides information about a token and is defined as follows:
+	 * 
+	 * 		typedef struct CK_TOKEN_INFO {
+	 * 				CK_UTF8CHAR label[32];
+	 * 				CK_UTF8CHAR manufacturerID[32];
+	 * 				CK_UTF8CHAR model[16];
+	 * 				CK_CHAR serialNumber[16];
+	 * 				CK_FLAGS flags;
+	 * 				CK_ULONG ulMaxSessionCount;
+	 * 				CK_ULONG ulSessionCount;
+	 * 				CK_ULONG ulMaxRwSessionCount;
+	 * 				CK_ULONG ulRwSessionCount;
+	 * 				CK_ULONG ulMaxPinLen;
+	 * 				CK_ULONG ulMinPinLen;
+	 * 				CK_ULONG ulTotalPublicMemory;
+	 * 				CK_ULONG ulFreePublicMemory;
+	 * 				CK_ULONG ulTotalPrivateMemory;
+	 * 				CK_ULONG ulFreePrivateMemory;
+	 * 				CK_VERSION hardwareVersion;
+	 * 				CK_VERSION firmwareVersion;
+	 * 				CK_CHAR utcTime[16];
+	 * 		} CK_TOKEN_INFO;
+	*/
+	CK_TOKEN_INFO tokenInfo;
+
+	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize()")) {
+		// Operation failed
+		return 4;
+	}
 
 	/**
 	 * CK_RV C_GetSlotList(CK_BBOOL tokenPresent, CK_SLOT_ID_PTR pSlotList, CK_ULONG_PTR pulCount);
@@ -134,20 +178,41 @@ int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr)
 		retVal = check_operation(funclistPtr->C_GetSlotList(CK_TRUE, slotlistPtr, &slotsCount), "C_GetSlotList()");
 		if (!retVal) {
 			// Operation successful
-			/**
-			 * CK_RV C_GetSlotInfo(CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo);
-			 * 
-			 * C_GetSlotInfo() obtains information about a particular slot in the system. 
-			 * 
-			 * slotID is the ID of the slot 
-			 * pInfo points to the location that receives the slot information.
-			 * */
-
 			for (int i = 0; i < slotsCount; ++i) {
-				// Displaying some information of the detected slots
-				cout << slotlistPtr[i] << endl;
-				retVal = check_operation(C_GetSlotInfo(slotlistPtr[i], CK_SLOT_INFO_PTR pInfo), "C_GetSlotInfo()");
-				if (!retVal) {}
+				// Displaying some information about the detected slots
+				/**
+				 * CK_RV C_GetSlotInfo(CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo);
+				 * 
+				 * C_GetSlotInfo() obtains information about a particular slot in the system. 
+				 * 
+				 * slotID is the ID of the slot 
+				 * pInfo points to the location that receives the slot information.
+				 * */
+				retVal = check_operation(C_GetSlotInfo(slotlistPtr[i], &slotInfo), "C_GetSlotInfo()");
+				if (!retVal) {
+					cout << "For the slot ID: " 	<< slotlistPtr[i] << "we have," << endl
+						 << "\tDescription : " 		<< slotInfo.slotDescription << endl
+						 << "\tManufacturer ID: " 	<< slotInfo.manufacturerID << endl;
+				}
+				/**
+				 * CK_RV C_GetTokenInfo(CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo);
+				 * 
+				 * C_GetTokenInfo() obtains information about a particular token in the system. 
+				 * 
+				 * slotID is the ID of the token’s slot
+				 * pInfo points to the location that receives the token information.
+				*/
+				retVal = check_operation(C_GetTokenInfo(slotlistPtr[i], &tokenInfo), "C_GetTokenInfo()");
+				if (!retVal) {
+					cout << "For the token, we have" << endl
+						 << "\tLabel : " 		<< tokenInfo.label << endl
+						 << "\tNo. of sessions: " 	<< tokenInfo.ulSessionCount << endl
+						 << "\tMinimum PIN byte-length: "	<< tokenInfo.ulMinPinLen << endl
+						 << "\tBit flag value: " << tokenInfo.flags << endl;
+				}
+				else
+					i = slotsCount;
+			}
 		}
 		delete[] slotlistPtr;
 	}

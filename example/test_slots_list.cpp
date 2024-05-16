@@ -11,19 +11,17 @@
  *      /opt/softhsm2/var/lib/softhsm
  * 
  * To build the program using Makefile, run the following command
- * 		make test_ConnDis
+ * 		make test_SlotList
  * 
  * If Makefile was used to build, then run to following command to remove the binary and object files
  *      make clean
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp -o test_ConnDis -I../include
+ *      g++ -Wall -Werror test_slots_list.cpp ../source/slots_list.cpp -o test_SlotList -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
  * 
- * If a slot has not initialized, then to initialize a token slot, one can run the following command
- *      softhsm2-util --init-token --slot <slot_number> --label <text>
  * 
 */
 
@@ -46,7 +44,7 @@ int main()
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		
 	}
-	free_Resource(libHandle, funclistPtr);
+	free_resource(libHandle, funclistPtr);
 	
 	return retVal;
 }
