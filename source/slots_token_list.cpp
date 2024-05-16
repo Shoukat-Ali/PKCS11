@@ -73,6 +73,9 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
  * First, decrements the reference count on SoftHSM library handle
  * Second, assigning null to the pointer to the list of PKCS #11 function
  * 
+ * libHandle is a void pointer for SoftHSM library handle
+ * funclistPtr is an alias of pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * 
  * The function does not return anything 
 */
 void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
@@ -89,7 +92,9 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 /**
  * The function displays some of the slot information
  * 
+ * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * slotID is the ID of the slot
+ * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
 int display_slot_info(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SLOT_ID slotID)
@@ -129,7 +134,9 @@ int display_slot_info(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SLOT_ID s
 /**
  * The function displays some of the token information
  * 
+ * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * slotID is the ID of the slot
+ * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
 int display_token_info(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SLOT_ID slotID)
