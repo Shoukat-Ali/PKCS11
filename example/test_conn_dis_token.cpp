@@ -53,14 +53,14 @@ int main()
 	
 	if (!(retVal = load_library_HSM(libHandle, funclistPtr))) {
 		cout << "HSM PKCS #11 library loaded successfully\n";
-		if (!(retVal = connect_Slot(funclistPtr, hSession, usrPIN))) {
+		if (!(retVal = connect_slot(funclistPtr, hSession, usrPIN))) {
 			cout << "Connected to token successfully\n";
-			if (!(retVal = disconnect_Slot(funclistPtr, hSession))) {
+			if (!(retVal = disconnect_slot(funclistPtr, hSession))) {
 				cout << "Disconnected from token successfully\n";
 			}
 		}
 	}
-	free_Resource(libHandle, funclistPtr, usrPIN);
+	free_resource(libHandle, funclistPtr, usrPIN);
 	
 	return retVal;
 }

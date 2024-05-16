@@ -20,7 +20,7 @@ using std::endl;
  * Otherwise, non-zero integer is returned on failure.
  *  
 */
-int check_Operation(const CK_RV rv, const char* message)
+int check_operation(const CK_RV rv, const char* message)
 {
 	if (rv != CKR_OK) {
 		cout << "Error, " << message << " failed with : " << rv << endl
@@ -104,7 +104,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 	 * 
 	 * C_GetFunctionList obtains a pointer to the Cryptoki library’s list of function pointers.
 	*/
-	return check_Operation(C_GetFunctionList(&funclistPtr), "C_GetFunctionList");
+	return check_operation(C_GetFunctionList(&funclistPtr), "C_GetFunctionList");
 	
 }
 
@@ -124,7 +124,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN)
+int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN)
 {
 	/**
 	 * CK_SLOT_ID is a Cryptoki-assigned value that identifies a slot.
@@ -145,7 +145,7 @@ int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, 
 	 * Cryptoki through multiple threads simultaneously, it can generally supply the value NULL_PTR to C_Initialize().
 	 * Cryptoki defines a C-style NULL pointer, which is distinct from any valid pointeri.e., NULL_PTR
 	 * */
-	if (check_Operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize")) {
+	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize")) {
 		// Operation failed
 		return 4;
 	}
@@ -180,7 +180,7 @@ int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, 
 	 * events. If the application does not wish to support callbacks, it should pass a value of
 	 * NULL_PTR as the Notify parameter.
 	*/
-	if (check_Operation(funclistPtr->C_OpenSession(slotID, CKF_SERIAL_SESSION | CKF_RW_SESSION,
+	if (check_operation(funclistPtr->C_OpenSession(slotID, CKF_SERIAL_SESSION | CKF_RW_SESSION,
 											NULL_PTR, NULL_PTR, &hSession), 
 											"C_OpenSession")) {
 											// Operation failed
@@ -209,7 +209,7 @@ int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, 
 	 * When C_Login returns, whatever authentication method supported by the token will have been performed; 
 	 * a return value of CKR_OK means that the user was successfully authenticated
 	*/
-	if (check_Operation(funclistPtr->C_Login(hSession, CKU_USER,
+	if (check_operation(funclistPtr->C_Login(hSession, CKU_USER,
 											reinterpret_cast<CK_BYTE_PTR>(const_cast<char*>(usrPIN.c_str())),
 											usrPIN.length()), "C_Login")) {
 												// Operation failed
@@ -228,7 +228,7 @@ int connect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, 
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int disconnect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
+int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
 {
 	/**
 	 * CK_RV C_Logout(CK_SESSION_HANDLE hSession);
@@ -239,7 +239,7 @@ int disconnect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSessio
 	 * not be the case that those operations are still active. Therefore, before logging out, 
 	 * any active operations should be finished.
 	*/
-	if (check_Operation(funclistPtr->C_Logout(hSession), "C_Logout")) {
+	if (check_operation(funclistPtr->C_Logout(hSession), "C_Logout")) {
 		// Operation failed
 		return 4;
 	}
@@ -253,7 +253,7 @@ int disconnect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSessio
 	 * When a session is closed, all session objects created by the session are destroyed
 	 * automatically, even if the application has other sessions “using” the objects
 	*/
-	if (check_Operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion")) {
+	if (check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion")) {
 		// Operation failed
 		return 4;
 	}
@@ -269,7 +269,7 @@ int disconnect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSessio
 	 * If several applications are using Cryptoki, each one should call C_Finalize. Each
 	 * application’s call to C_Finalize should be preceded by a single call to C_Initialize;
 	*/
-	if (check_Operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize")) {
+	if (check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize")) {
 		// Operation failed
 		return 4;
 	}
@@ -286,7 +286,7 @@ int disconnect_Slot(CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSessio
  * 
  * The function does not return anything 
 */
-void free_Resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN)
+void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN)
 {
 	cout << "Clean up and free the resources\n";
 	/**
