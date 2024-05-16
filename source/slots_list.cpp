@@ -86,21 +86,15 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 	
 }
 
-
 /**
- * The function attempts to get the list of all detected slots
- * and display some information about those slots
+ * The function displays some of the slot information
  * 
- * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
- * 
+ * slotID is the ID of the slot
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr)
+int display_slot_info(const CK_SLOT_ID slotID)
 {
 	int retVal = 0;
-	CK_ULONG slotsCount;
-	CK_SLOT_ID_PTR slotlistPtr = NULL_PTR;
-	
 	/**
 	 * CK_SLOT_INFO provides information about a slot and is defined as follows:
 	 * 
@@ -114,6 +108,33 @@ int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr)
 	*/
 	CK_SLOT_INFO slotInfo;
 
+	/**
+	 * CK_RV C_GetSlotInfo(CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo);
+	 * 
+	 * C_GetSlotInfo() obtains information about a particular slot in the system. 
+	 * 
+	 * slotID is the ID of the slot 
+	 * pInfo points to the location that receives the slot information.
+	 * */
+	retVal = check_operation(C_GetSlotInfo(slotID, &slotInfo), "C_GetSlotInfo()");
+	if (!retVal) {
+		cout << "For the slot ID: " 		<< slotID << "we have," << endl
+				<< "\tDescription : " 		<< slotInfo.slotDescription << endl
+				<< "\tManufacturer ID: " 	<< slotInfo.manufacturerID << endl;
+	}
+	return retVal;
+}
+
+
+/**
+ * The function displays some of the token information
+ * 
+ * slotID is the ID of the slot
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int display_token_info(const CK_SLOT_ID slotID)
+{
+	int retVal = 0;
 	/**
 	 * CK_TOKEN_INFO provides information about a token and is defined as follows:
 	 * 
@@ -140,6 +161,41 @@ int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr)
 	*/
 	CK_TOKEN_INFO tokenInfo;
 
+	/**
+	 * CK_RV C_GetTokenInfo(CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo);
+	 * 
+	 * C_GetTokenInfo() obtains information about a particular token in the system. 
+	 * 
+	 * slotID is the ID of the token’s slot
+	 * pInfo points to the location that receives the token information.
+	*/
+	retVal = check_operation(C_GetTokenInfo(slotID, &tokenInfo), "C_GetTokenInfo()");
+	if (!retVal) {
+		cout << "For the token, we have" 			<< endl
+				<< "\tLabel : " 					<< tokenInfo.label << endl
+				<< "\tNo. of sessions: " 			<< tokenInfo.ulSessionCount << endl
+				<< "\tMinimum PIN byte-length: "	<< tokenInfo.ulMinPinLen << endl
+				<< "\tBit flag value: " 			<< tokenInfo.flags << endl;
+	}
+	return retVal;
+
+}
+
+
+/**
+ * The function attempts to get the list of all detected slots
+ * and display some information about those slots
+ * 
+ * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int display_all_slot_token(const CK_FUNCTION_LIST_PTR funclistPtr)
+{
+	int retVal = 0;
+	CK_ULONG slotsCount;
+	CK_SLOT_ID_PTR slotlistPtr = NULL_PTR;
+	
 	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize()")) {
 		// Operation failed
 		return 4;
@@ -179,43 +235,19 @@ int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr)
 		if (!retVal) {
 			// Operation successful
 			for (int i = 0; i < slotsCount; ++i) {
-				// Displaying some information about the detected slots
-				/**
-				 * CK_RV C_GetSlotInfo(CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo);
-				 * 
-				 * C_GetSlotInfo() obtains information about a particular slot in the system. 
-				 * 
-				 * slotID is the ID of the slot 
-				 * pInfo points to the location that receives the slot information.
-				 * */
-				retVal = check_operation(C_GetSlotInfo(slotlistPtr[i], &slotInfo), "C_GetSlotInfo()");
-				if (!retVal) {
-					cout << "For the slot ID: " 	<< slotlistPtr[i] << "we have," << endl
-						 << "\tDescription : " 		<< slotInfo.slotDescription << endl
-						 << "\tManufacturer ID: " 	<< slotInfo.manufacturerID << endl;
-				}
-				/**
-				 * CK_RV C_GetTokenInfo(CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo);
-				 * 
-				 * C_GetTokenInfo() obtains information about a particular token in the system. 
-				 * 
-				 * slotID is the ID of the token’s slot
-				 * pInfo points to the location that receives the token information.
-				*/
-				retVal = check_operation(C_GetTokenInfo(slotlistPtr[i], &tokenInfo), "C_GetTokenInfo()");
-				if (!retVal) {
-					cout << "For the token, we have" << endl
-						 << "\tLabel : " 		<< tokenInfo.label << endl
-						 << "\tNo. of sessions: " 	<< tokenInfo.ulSessionCount << endl
-						 << "\tMinimum PIN byte-length: "	<< tokenInfo.ulMinPinLen << endl
-						 << "\tBit flag value: " << tokenInfo.flags << endl;
-				}
-				else
+				// Displaying some information about the detected slots and tokens
+				retVal = display_slot_info(slotlistPtr[i]);
+				retVal = display_token_info(slotlistPtr[i]);
+				if (retVal) {
+					// operatioin failed
 					i = slotsCount;
+				}				
 			}
 		}
 		delete[] slotlistPtr;
 	}
+	
+	retVal = check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize()");
 	return retVal;
 	
 }

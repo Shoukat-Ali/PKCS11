@@ -19,6 +19,6 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
-int display_slots_info(const CK_FUNCTION_LIST_PTR funclistPtr);
+int display_all_slot_token(const CK_FUNCTION_LIST_PTR funclistPtr);
 
 #endif
