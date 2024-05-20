@@ -32,6 +32,41 @@ int check_operation(const CK_RV rv, const char* message)
 
 
 /**
+ * The function attempts to load SoftHSM library in order to use PKCS# 11 functions/API.
+ * 
+ * libHandle is a void pointer for SoftHSM library handle
+ * funclistPtr is an alias of pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ *  
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
+{
+	const char *libPath = nullptr;
+	
+	libPath = getenv("SOFTHSM2_LIB");
+	if(libPath == nullptr) {
+		cout << "Error, SOFTHSM2_LIB environment variable is not set" << endl;
+		return 2;
+	}
+	
+	libHandle = dlopen(libPath, RTLD_NOW);
+	if (!libHandle) {
+		cout << "Error, failed to load SoftHSM library into memory from path " << libPath << endl;
+		return 3;
+	}
+	
+    CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
+	if (!C_GetFunctionList) {
+		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
+		return 3;
+	}
+	
+    return check_operation(C_GetFunctionList(&funclistPtr), "C_GetFunctionList()");
+	
+}
+
+
+/**
  * 
 */
 void generateECDSAKeyPair()
