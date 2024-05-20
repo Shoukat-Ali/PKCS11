@@ -1,7 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
- 
+#include "../header/gen_ECDSA_keypair.hpp" 
 
 using std::cout; 
 using std::cin;
@@ -67,6 +67,60 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 
 
 /**
+ * This function attempts to connect to a token. 
+ * 
+ * First, it initializes the Cryptoki/SoftHSM library; 
+ * Second, attempts to open a new session by taking solt ID from the user;
+ * Finally, attempts to perform login based on user inputs.
+ * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * usrPIN is an alias to user PIN as string
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN)
+{
+	CK_SLOT_ID slotID = 0;
+
+	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize")) {
+		// Operation failed
+		return 4;
+	}
+
+	
+	cout << "\tPlease enter the slot ID (integer): ";
+	cin >> slotID;
+	if (!cin.good()) {
+		cout << "Error, slot ID is not integer\n";
+		cin.clear();  //clearing all error state flags.
+		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n'); // skip/ignore bad input  
+	}
+
+	if (check_operation(funclistPtr->C_OpenSession(slotID, CKF_SERIAL_SESSION | CKF_RW_SESSION,
+											NULL_PTR, NULL_PTR, &hSession), 
+											"C_OpenSession")) {
+											// Operation failed
+											return 4;
+	}
+	
+	
+	cout << "\tPlease enter the User PIN: ";
+	cin >> usrPIN;
+	
+    if (check_operation(funclistPtr->C_Login(hSession, CKU_USER,
+											reinterpret_cast<CK_BYTE_PTR>(const_cast<char*>(usrPIN.c_str())),
+											usrPIN.length()), "C_Login")) {
+												// Operation failed
+												return 4;
+											}
+
+	return 0;
+}
+
+
+
+/**
  * 
 */
 void generateECDSAKeyPair()
@@ -101,7 +155,7 @@ void generateECDSAKeyPair()
     };
     CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
 
-    checkOperation(p11Func->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");    
+    check_operation(p11Func->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");    
     cout << "ECDSA keypair generated as handle #" << hPublic << " for public key and handle #" << hPrivate << " for a private key." << endl;
     
 }
