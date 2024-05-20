@@ -121,6 +121,39 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 
 
 /**
+ * This function attempts to disconnects from a token.
+ * First, logs out the user from the token/slot; 
+ * Second, closes the current session and; 
+ * Finally, finalizes the SoftHSM library to indicate that application is finished with the Cryptoki library
+ * 
+ * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
+{
+	if (check_operation(funclistPtr->C_Logout(hSession), "C_Logout")) {
+		// Operation failed
+		return 4;
+	}
+	
+	if (check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion")) {
+		// Operation failed
+		return 4;
+	}
+	
+	if (check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize")) {
+		// Operation failed
+		return 4;
+	}
+	return 0;
+}
+
+
+
+
+/**
  * 
 */
 void generateECDSAKeyPair()
