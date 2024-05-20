@@ -1,11 +1,15 @@
 /**
  * This program was built and executed on Ubuntu 22.04.4 LTS
  * 
+ * To use the Makefile, make sure you're in the same directory of Makefile
  * To build the program using Makefile, run the following command
  * 		make test_ConnDis
  * 
+ * If Makefile was used to build, then to execute the program, run the following command
+ *      ./test_ConnDis
+ * 
  * If Makefile was used to build, then run to following command to remove the binary and object files
- *      make clean
+ *      make clean_test_ConnDis
  * 
  * To build the program in the example directory, one can run the following command
  *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp -o test_ConnDis -I../include

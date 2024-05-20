@@ -52,6 +52,8 @@ test_STList: $(OBJS_STLIST)
 
 
 .PHONY : clean
-clean:
-#	rm test_ConnDis $(OBJS_CONNDIS)
+clean_test_ConnDis:
+	rm test_ConnDis $(OBJS_CONNDIS)
+
+clean_test_STList:
 	rm test_STList $(OBJS_STLIST)
