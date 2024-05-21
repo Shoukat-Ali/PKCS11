@@ -22,8 +22,7 @@ using std::endl;
 int check_operation(const CK_RV rv, const char* message)
 {
 	if (rv != CKR_OK) {
-		cout << "Error, " << message << " failed with : " << rv << endl
-			 << "RV : " << rv << endl;
+		cout << "Error, " << message << " failed with RV : " << rv << endl;
 		return 1;
 	}
 	return 0;
@@ -52,13 +51,13 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 	libHandle = dlopen(libPath, RTLD_NOW);
 	if (!libHandle) {
 		cout << "Error, failed to load SoftHSM library into memory from path " << libPath << endl;
-		return 3;
+		return 2;
 	}
 	
     CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
 	if (!C_GetFunctionList) {
 		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
-		return 3;
+		return 2;
 	}
 	
     return check_operation(C_GetFunctionList(&funclistPtr), "C_GetFunctionList()");
@@ -83,7 +82,7 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 {
 	CK_SLOT_ID slotID = 0;
 
-	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize")) {
+	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize()")) {
 		// Operation failed
 		return 4;
 	}
@@ -99,7 +98,7 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 
 	if (check_operation(funclistPtr->C_OpenSession(slotID, CKF_SERIAL_SESSION | CKF_RW_SESSION,
 											NULL_PTR, NULL_PTR, &hSession), 
-											"C_OpenSession")) {
+											"C_OpenSession()")) {
 											// Operation failed
 											return 4;
 	}
@@ -110,7 +109,7 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 	
     if (check_operation(funclistPtr->C_Login(hSession, CKU_USER,
 											reinterpret_cast<CK_BYTE_PTR>(const_cast<char*>(usrPIN.c_str())),
-											usrPIN.length()), "C_Login")) {
+											usrPIN.length()), "C_Login()")) {
 												// Operation failed
 												return 4;
 											}
@@ -133,17 +132,17 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 */
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
 {
-	if (check_operation(funclistPtr->C_Logout(hSession), "C_Logout")) {
+	if (check_operation(funclistPtr->C_Logout(hSession), "C_Logout()")) {
 		// Operation failed
 		return 4;
 	}
 	
-	if (check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion")) {
+	if (check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion()")) {
 		// Operation failed
 		return 4;
 	}
 	
-	if (check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize")) {
+	if (check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize()")) {
 		// Operation failed
 		return 4;
 	}
@@ -179,7 +178,7 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
 /**
  * 
 */
-void generateECDSAKeyPair()
+void generateECDSAKeyPair(const CK_FUNCTION_LIST_PTR funclistPtr)
 {
     CK_MECHANISM mech = {CKM_ECDSA_KEY_PAIR_GEN};
     CK_BBOOL yes = CK_TRUE;
@@ -211,7 +210,7 @@ void generateECDSAKeyPair()
     };
     CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
 
-    check_operation(p11Func->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");    
+    check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");    
     cout << "ECDSA keypair generated as handle #" << hPublic << " for public key and handle #" << hPrivate << " for a private key." << endl;
     
 }

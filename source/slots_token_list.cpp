@@ -22,8 +22,7 @@ using std::endl;
 int check_operation(const CK_RV rv, const char* message)
 {
 	if (rv != CKR_OK) {
-		cout << "Error, " << message << " failed with : " << rv << endl
-			 << "RV : " << rv << endl;
+		cout << "Error, " << message << " failed with RV : " << rv << endl;
 		return 1;
 	}
 	return 0;
@@ -55,7 +54,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 		return 3;
 	}
 	
-    CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
+    CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList()");
 	if (!C_GetFunctionList) {
 		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
 		return 3;
