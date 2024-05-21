@@ -164,7 +164,7 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
 
 
 /**
- * The function generates Elliptic Curve Digital Signature Algorithm (ECDSA) keypair 
+ * The function generates Elliptic Curve (EC) keypair 
  * based on the given parameters.
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
@@ -173,7 +173,23 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
 int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession)
 {
 	int retVal = 0;
-    CK_MECHANISM mech = {CKM_ECDSA_KEY_PAIR_GEN};
+	/**
+	 * A mechanism specifies precisely how a certain cryptographic process is to be performed.
+	 * CK_MECHANISM is a structure that specifies a particular mechanism and any
+	 * parameters it requires. It is defined as follows:
+	 * 		typedef struct CK_MECHANISM {
+	 * 						CK_MECHANISM_TYPE mechanism;
+	 * 						CK_VOID_PTR pParameter;
+	 * 						CK_ULONG ulParameterLen;
+	 * 						} CK_MECHANISM;
+	 * 
+	 * The fields of the structure have the following meanings:
+	 * mechanism is the type of mechanism e.g., CKM_ECDSA_KEY_PAIR_GEN or CKM_EC_KEY_PAIR_GEN
+	 * pParameter is a pointer to the parameter if required by the mechanism
+	 * ulParameterLen is the length in bytes of the parameter
+	*/
+
+    CK_MECHANISM mech = {CKM_EC_KEY_PAIR_GEN};
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
     CK_UTF8CHAR pubLabel[] = "ecdsa_public";
@@ -220,7 +236,7 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
         {CKA_PRIVATE,           &no,                sizeof(CK_BBOOL)},
         {CKA_VERIFY,            &yes,               sizeof(CK_BBOOL)},
         {CKA_ENCRYPT,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_EC_PARAMS,		&curve,		    sizeof(curve)},
+        {CKA_EC_PARAMS,			&curve,		    sizeof(curve)},
         {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
     };
     CK_ULONG attribLenPub = sizeof(attribPub) / sizeof(*attribPub);
