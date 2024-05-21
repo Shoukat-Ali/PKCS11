@@ -5,8 +5,8 @@
 */
 
 
-#ifndef ECDSA_KEYPAIR_HPP
-#define ECDSA_KEYPAIR_HPP
+#ifndef EC_KEYPAIR_HPP
+#define EC_KEYPAIR_HPP
 
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 

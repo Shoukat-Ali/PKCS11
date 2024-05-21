@@ -1,7 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
-#include "../header/gen_ECDSA_keypair.hpp" 
+#include "../header/gen_EC_keypair.hpp" 
 
 using std::cout; 
 using std::cin;
