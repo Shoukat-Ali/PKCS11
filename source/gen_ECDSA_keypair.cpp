@@ -179,7 +179,40 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
     CK_UTF8CHAR pubLabel[] = "ecdsa_public";
     CK_UTF8CHAR priLabel[] = "ecdsa_private";
 	// 06 05 2b 81 04 00 22
-    CK_BYTE curve[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x22}; // hex representation for secp384r1 curve.
+	/**
+	 * To choose Elliptic Curve (EC) parameters, one can use openssl
+	 * To get the list of EC, run the following command in a terminal
+	 * 		openssl ecparam -list_curves 
+	 * 
+	 * To obtain the EC parameter in hexadecimal form, run the following command in a terminal
+	 * 		openssl ecparam -name <name> -outform <PEM|DER> | xxd
+	 * 
+	 * For the secp521r1, we have 
+	 * 		openssl ecparam -name secp521r1 -outform DER | xxd
+	 * Output:
+	 * 		0605 2b81 0400 23
+	 * 
+	*/
+    CK_BYTE curve[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x23};
+
+	/**
+	 * CK_ATTRIBUTE is a structure that includes the type, value, and length of an attribute.
+	 * It is defined as follows:
+	 * 		typedef struct CK_ATTRIBUTE {
+	 * 					CK_ATTRIBUTE_TYPE type;
+	 * 					CK_VOID_PTR pValue;
+	 * 					CK_ULONG ulValueLen;
+	 * 					} CK_ATTRIBUTE;
+	 * 
+	 * The fields of the structure have the following meanings:
+	 * type represents the attribute type
+	 * pValue is a pointer to the value of the attribute
+	 * ulValueLen is the length in bytes of the value
+	 * 
+	 * If an attribute has no value, then ulValueLen = 0, and the value of pValue is irrelevant.
+	 * An array of CK_ATTRIBUTEs is called a “template” and is used for creating,
+	 * manipulating and searching for objects
+	*/
 
     CK_ATTRIBUTE attribPub[] = 
     {
@@ -202,6 +235,36 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
         {CKA_LABEL,             &priLabel,          sizeof(priLabel)}
     };
     CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
+
+	/**
+	 * CK_RV C_GenerateKeyPair(CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
+	 * 							CK_ATTRIBUTE_PTR pPublicKeyTemplate,
+	 * 							CK_ULONG ulPublicKeyAttributeCount,
+	 * 							CK_ATTRIBUTE_PTR pPrivateKeyTemplate,
+	 * 							CK_ULONG ulPrivateKeyAttributeCount,
+	 * 							CK_OBJECT_HANDLE_PTR phPublicKey,
+	 * 							CK_OBJECT_HANDLE_PTR phPrivateKey);
+	 * 
+	 * C_GenerateKeyPair() generates a public/private key pair, creating new key objects.
+	 * 
+	 * hSession is the session’s handle; 
+	 * pMechanism points to the key generation mechanism;
+	 * pPublicKeyTemplate points to the template for the public key;
+	 * ulPublicKeyAttributeCount is the number of attributes in the public-key template;
+	 * pPrivateKeyTemplate points to the template for the private key;
+	 * ulPrivateKeyAttributeCount is the number of attributes in the private-key template;
+	 * phPublicKey points to the location that receives the handle of the new public key;
+	 * phPrivateKey points to the location that receives the handle of the new private key.
+	 * 
+	 * A call to C_GenerateKeyPair() will never create just one key and return. A call can fail,
+	 * and create no keys; or it can succeed, and create a matching public/private key pair.
+	 * 
+	 * Since the types of keys to be generated are implicit in the key pair generation mechanism,
+	 * the templates do not need to supply key types. If one of the templates does supply a key
+	 * type which is inconsistent with the key generation mechanism, then C_GenerateKeyPair() 
+	 * fails and returns an error.
+	 * 
+	*/
 
     check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");    
     cout << "ECDSA keypair generated as handle #" << hPublic << " for public key and handle #" << hPrivate << " for a private key." << endl;
