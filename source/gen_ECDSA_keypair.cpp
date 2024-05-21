@@ -81,40 +81,34 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN)
 {
 	CK_SLOT_ID slotID = 0;
+	int retVal = 0;
 
-	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize()")) {
-		// Operation failed
-		return 4;
+	retVal = check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize()");
+	if (!retVal) {
+		// C_Initialize() was successful
+		cout << "\tPlease enter the slot ID (integer): ";
+		cin >> slotID;
+		if (!cin.good()) {
+			cout << "Error, slot ID is not integer\n";
+			cin.clear();  //clearing all error state flags.
+			cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n'); // skip/ignore bad input
+			return 3;  
+		}
+		retVal = check_operation(funclistPtr->C_OpenSession(slotID, CKF_SERIAL_SESSION | CKF_RW_SESSION,
+															NULL_PTR, NULL_PTR, &hSession), 
+															"C_OpenSession()");
+		if (!retVal) {
+			// Session opened successfully
+			cout << "\tPlease enter the User PIN: ";
+			cin >> usrPIN;
+
+			retVal = check_operation(funclistPtr->C_Login(hSession, CKU_USER,
+														reinterpret_cast<CK_BYTE_PTR>(const_cast<char*>(usrPIN.c_str())),
+														usrPIN.length()), "C_Login()");
+		}
 	}
-
 	
-	cout << "\tPlease enter the slot ID (integer): ";
-	cin >> slotID;
-	if (!cin.good()) {
-		cout << "Error, slot ID is not integer\n";
-		cin.clear();  //clearing all error state flags.
-		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n'); // skip/ignore bad input  
-	}
-
-	if (check_operation(funclistPtr->C_OpenSession(slotID, CKF_SERIAL_SESSION | CKF_RW_SESSION,
-											NULL_PTR, NULL_PTR, &hSession), 
-											"C_OpenSession()")) {
-											// Operation failed
-											return 4;
-	}
-	
-	
-	cout << "\tPlease enter the User PIN: ";
-	cin >> usrPIN;
-	
-    if (check_operation(funclistPtr->C_Login(hSession, CKU_USER,
-											reinterpret_cast<CK_BYTE_PTR>(const_cast<char*>(usrPIN.c_str())),
-											usrPIN.length()), "C_Login()")) {
-												// Operation failed
-												return 4;
-											}
-
-	return 0;
+	return retVal;
 }
 
 
@@ -132,21 +126,15 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 */
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
 {
-	if (check_operation(funclistPtr->C_Logout(hSession), "C_Logout()")) {
-		// Operation failed
-		return 4;
+	int retVal = 0;
+	retVal = check_operation(funclistPtr->C_Logout(hSession), "C_Logout()");
+	if (!retVal) {
+		// C_Logout() was successful
+		retVal = check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion()");
+		retVal = check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize()");
 	}
 	
-	if (check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion()")) {
-		// Operation failed
-		return 4;
-	}
-	
-	if (check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize()")) {
-		// Operation failed
-		return 4;
-	}
-	return 0;
+	return retVal;
 }
 
 
@@ -176,10 +164,15 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
 
 
 /**
+ * The function generates Elliptic Curve Digital Signature Algorithm (ECDSA) keypair 
+ * based on the given parameters.
  * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+ *  
 */
-void generateECDSAKeyPair(const CK_FUNCTION_LIST_PTR funclistPtr)
+int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession)
 {
+	int retVal = 0;
     CK_MECHANISM mech = {CKM_ECDSA_KEY_PAIR_GEN};
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
