@@ -192,9 +192,8 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
     CK_MECHANISM mech = {CKM_EC_KEY_PAIR_GEN};
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
-    CK_UTF8CHAR pubLabel[] = "ecdsa_public";
-    CK_UTF8CHAR priLabel[] = "ecdsa_private";
-	// 06 05 2b 81 04 00 22
+    CK_UTF8CHAR pubLabel[] = "EC public";
+    CK_UTF8CHAR priLabel[] = "EC private";
 	/**
 	 * To choose Elliptic Curve (EC) parameters, one can use openssl
 	 * To get the list of EC, run the following command in a terminal
@@ -282,7 +281,5 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
 	 * 
 	*/
 
-    check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");    
-    cout << "ECDSA keypair generated as handle #" << hPublic << " for public key and handle #" << hPrivate << " for a private key." << endl;
-    
+        
 }
