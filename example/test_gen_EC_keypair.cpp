@@ -52,6 +52,9 @@ int main()
 	 * 
 	*/
     CK_BYTE curve[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x23};
+
+    CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
+    CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle
 	
 	if (!(retVal = load_library_HSM(libHandle, funclistPtr))) {
 		cout << "HSM PKCS #11 library loaded successfully\n";

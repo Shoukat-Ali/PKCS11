@@ -171,7 +171,8 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
  *  
 */
 int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
-					CK_BYTE_PTR const ecPara, const size_t ecParaSZ)
+					CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
+					CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr)
 {
 	int retVal = 0;
 	/**
@@ -267,6 +268,10 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 	 * fails and returns an error.
 	 * 
 	*/
+	retVal = check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, 
+								attribPub, sizeof(attribPub) / sizeof(*attribPub),
+								attribPri, sizeof(attribPri) / sizeof(*attribPri),
+								hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
 
         
 }
