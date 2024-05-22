@@ -170,7 +170,8 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  *  
 */
-int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession)
+int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+					CK_BYTE_PTR const ecPara, const size_t ecParaSZ)
 {
 	int retVal = 0;
 	/**
@@ -193,22 +194,8 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
     CK_UTF8CHAR pubLabel[] = "EC public";
-    CK_UTF8CHAR priLabel[] = "EC private";
-	/**
-	 * To choose Elliptic Curve (EC) parameters, one can use openssl
-	 * To get the list of EC, run the following command in a terminal
-	 * 		openssl ecparam -list_curves 
-	 * 
-	 * To obtain the EC parameter in hexadecimal form, run the following command in a terminal
-	 * 		openssl ecparam -name <name> -outform <PEM|DER> | xxd
-	 * 
-	 * For the secp521r1, we have 
-	 * 		openssl ecparam -name secp521r1 -outform DER | xxd
-	 * Output:
-	 * 		0605 2b81 0400 23
-	 * 
-	*/
-    CK_BYTE curve[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x23};
+    CK_UTF8CHAR prvLabel[] = "EC private";
+	
 
 	/**
 	 * CK_ATTRIBUTE is a structure that includes the type, value, and length of an attribute.
@@ -231,23 +218,23 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
 
     CK_ATTRIBUTE attribPub[] = 
     {
-        {CKA_TOKEN,             &yes,               sizeof(CK_BBOOL)},
-        {CKA_PRIVATE,           &no,                sizeof(CK_BBOOL)},
-        {CKA_VERIFY,            &yes,               sizeof(CK_BBOOL)},
-        {CKA_ENCRYPT,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_EC_PARAMS,			&curve,		    sizeof(curve)},
+        {CKA_TOKEN,             &yes,               sizeof(yes)},
+        {CKA_PRIVATE,           &no,                sizeof(no)},
+        {CKA_VERIFY,            &yes,               sizeof(yes)},
+        {CKA_ENCRYPT,           &yes,               sizeof(yes)},
+        {CKA_EC_PARAMS,			ecPara,		    	ecParaSZ},
         {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
     };
     CK_ULONG attribLenPub = sizeof(attribPub) / sizeof(*attribPub);
 
     CK_ATTRIBUTE attribPri[] = 
     {
-        {CKA_TOKEN,             &yes,                sizeof(CK_BBOOL)},
-        {CKA_PRIVATE,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_SIGN,              &yes,               sizeof(CK_BBOOL)},
-        {CKA_DECRYPT,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_SENSITIVE,         &yes,               sizeof(CK_BBOOL)},
-        {CKA_LABEL,             &priLabel,          sizeof(priLabel)}
+        {CKA_TOKEN,             &yes,               sizeof(yes)},
+        {CKA_PRIVATE,           &yes,               sizeof(yes)},
+        {CKA_SIGN,              &yes,               sizeof(yes)},
+        {CKA_DECRYPT,           &yes,               sizeof(yes)},
+        {CKA_SENSITIVE,         &yes,               sizeof(yes)},
+        {CKA_LABEL,             &prvLabel,          sizeof(prvLabel)}
     };
     CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
 
