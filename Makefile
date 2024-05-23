@@ -22,10 +22,16 @@ SRC_STLIST = $(addprefix $(SRC_DIR),slots_token_list.cpp)
 MAIN_STLIST = $(addprefix $(MAIN_DIR),test_slots_token_list.cpp)
 
 
+# Elliptic Curve (EC) keypair generation
+HDR_ECKEYPAIR = $(addprefix $(HEADER_DIR),gen_EC_keypair.hpp)
+SRC_ECKEYPAIR = $(addprefix $(SRC_DIR),gen_EC_keypair.cpp)
+MAIN_ECKEYPAIR = $(addprefix $(MAIN_DIR),test_gen_EC_keypair.cpp)
+
 
 #Object files
 OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o
-OBJS_STLIST = main_STLIST.o src_STLIST.o
+OBJS_STLIST = main_STList.o src_STList.o
+OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o
 
 
 # Connect to and disconnect from a token
@@ -40,15 +46,25 @@ test_ConnDis: $(OBJS_CONNDIS)
 
 
 # Slot and Token information files
-main_STLIST.o: $(MAIN_STLIST)
+main_STList.o: $(MAIN_STLIST)
 	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
 
-src_STLIST.o: $(SRC_STLIST) $(HDR_STLIST)
+src_STList.o: $(SRC_STLIST) $(HDR_STLIST)
 	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
 
 test_STList: $(OBJS_STLIST)
 	$(CXX) $^ -o $@
 
+
+# EC keypair files
+main_ECKeypair.o: $(MAIN_ECKEYPAIR)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+src_ECKeypair.o: $(SRC_ECKEYPAIR) $(HDR_ECKEYPAIR)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+test_ECKeypair: $(OBJS_ECKEYPAIR)
+	$(CXX) $^ -o $@
 
 
 .PHONY : clean
@@ -57,3 +73,6 @@ clean_test_ConnDis:
 
 clean_test_STList:
 	rm test_STList $(OBJS_STLIST)
+
+clean_test_ECKeypair:
+	rm test_ECKeypair $(OBJS_ECKEYPAIR)
