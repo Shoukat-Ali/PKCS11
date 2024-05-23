@@ -17,11 +17,19 @@
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
  * 
- * If a slot has not initialized, then to initialize a token slot, one can run the following command
+ * If a slot has not initialized, then to initialize a token slot, one can run the following commands
+ * 		softhsm2-util --init-token --free --so-pin <so_pin> --pin <user_pin> --label <token_label>
+ * OR
  *      softhsm2-util --init-token --slot <slot_number> --label <text>
  * 
- * Using p11tool to see the generated public/private keys, run the following command
- * 		p11tool --provider /opt/softhsm2/lib/softhsm/libsofthsm2.so --login --list-all
+ * Using p11tool to see list of tokens, run the following command
+ * 		p11tool --provider </full/path/to/libsofthsm2.so>  --list-tokens
+ * 
+ * Using p11tool to see the generated public/private key, run the following command
+ * 		p11tool --provider </full/path/to/libsofthsm2.so> --login --list-all <TOKEN-URL>
+ * 		 
+ * To delete public/private key, run the following command
+ * 		p11tool --provider </full/path/to/libsofthsm2.so> --delete <TOKEN-URL>
 */
 
 
