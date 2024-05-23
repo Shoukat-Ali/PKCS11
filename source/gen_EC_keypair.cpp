@@ -194,8 +194,8 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
     CK_MECHANISM mech = {CKM_EC_KEY_PAIR_GEN};
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
-    CK_UTF8CHAR pubLabel[] = "EC public";
-    CK_UTF8CHAR prvLabel[] = "EC private";
+    CK_UTF8CHAR pubLabel[] = "EC public key";
+    CK_UTF8CHAR prvLabel[] = "EC private key";
 	
 
 	/**
@@ -217,8 +217,7 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 	 * manipulating and searching for objects
 	*/
 
-    CK_ATTRIBUTE attribPub[] = 
-    {
+    CK_ATTRIBUTE attribPub[] = {
         {CKA_TOKEN,             &yes,               sizeof(yes)},
         {CKA_PRIVATE,           &no,                sizeof(no)},
         {CKA_VERIFY,            &yes,               sizeof(yes)},
@@ -226,10 +225,8 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
         {CKA_EC_PARAMS,			ecPara,		    	ecParaSZ},
         {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
     };
-    CK_ULONG attribLenPub = sizeof(attribPub) / sizeof(*attribPub);
-
-    CK_ATTRIBUTE attribPri[] = 
-    {
+    
+    CK_ATTRIBUTE attribPri[] = {
         {CKA_TOKEN,             &yes,               sizeof(yes)},
         {CKA_PRIVATE,           &yes,               sizeof(yes)},
         {CKA_SIGN,              &yes,               sizeof(yes)},
@@ -237,10 +234,10 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
         {CKA_SENSITIVE,         &yes,               sizeof(yes)},
         {CKA_LABEL,             &prvLabel,          sizeof(prvLabel)}
     };
-    CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
-
+    
 	/**
-	 * CK_RV C_GenerateKeyPair(CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
+	 * CK_RV C_GenerateKeyPair(CK_SESSION_HANDLE hSession,
+	 * 							CK_MECHANISM_PTR pMechanism,
 	 * 							CK_ATTRIBUTE_PTR pPublicKeyTemplate,
 	 * 							CK_ULONG ulPublicKeyAttributeCount,
 	 * 							CK_ATTRIBUTE_PTR pPrivateKeyTemplate,
@@ -269,9 +266,12 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 	 * 
 	*/
 	retVal = check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, 
-								attribPub, sizeof(attribPub) / sizeof(*attribPub),
-								attribPri, sizeof(attribPri) / sizeof(*attribPri),
-								hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
+											attribPub, sizeof(attribPub) / sizeof(*attribPub),
+											attribPri, sizeof(attribPri) / sizeof(*attribPri),
+											hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
 
-        
+    if (!retVal) {
+		cout << "Elliptic Curve (EC) keypair successfully generated where\n";
+	}
+	return retVal;    
 }

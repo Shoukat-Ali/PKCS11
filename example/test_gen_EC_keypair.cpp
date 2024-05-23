@@ -24,18 +24,23 @@
 
 
 #include <iostream>
+#include <limits>
 #include "../header/gen_EC_keypair.hpp"
 
+
 using std::cout;
+using std::cin;
 
 
 int main()
 {
 	int retVal = 0;
+	int choice = -1;
 	void *libHandle = nullptr;
 	CK_FUNCTION_LIST_PTR funclistPtr = NULL_PTR;
 	CK_SESSION_HANDLE hSession = 0; 
 	std::string usrPIN;
+	size_t byteLen = 0;
 
     /**
 	 * To choose Elliptic Curve (EC) parameters, one can use openssl
@@ -50,16 +55,80 @@ int main()
 	 * Output:
 	 * 		0605 2b81 0400 23
 	 * 
+	 * For the prime256v1, we have 
+	 * 		openssl ecparam -name prime256v1 -outform DER | xxd
+	 * Output:
+	 * 		0608 2a86 48ce 3d03 0107
+	 * 
+	 * For the sect571k1, we have 
+	 * 		openssl ecparam -name sect571k1 -outform DER | xxd
+	 * Output:
+	 * 		0605 2b81 0400 26
+	 * 
+	 * For the c2tnb431r1, we have 
+	 * 		openssl ecparam -name c2tnb431r1 -outform DER | xxd
+	 * Output:
+	 * 		0608 2a86 48ce 3d03 0014
+	 * 
+	 * For the brainpoolP512t1, we have 
+	 * 		openssl ecparam -name brainpoolP512t1 -outform DER | xxd
+	 * Output:
+	 * 		0609 2b24 0303 0208 0101 0e
+	 * 
 	*/
-    CK_BYTE curve[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x23};
+    CK_BYTE ecpara[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x23};
+	CK_BYTE_PTR ecparaPtr = NULL_PTR;
 
     CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
     CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle
+
+	cout << "For Elliptic Curve (EC) curve, please enter an integer from the following list\n"
+		 << "\t1. secp521r1\n"
+		 << "\t2. prime256v1\n"
+		 << "\t3. sect571k1\n"
+		 << "\t4. c2tnb431r1\n"
+		 << "\t5. brainpoolP512t1\n";
+
+	cin >> choice;
+	if (!cin.good()) {
+		cout << "Error, it is not integer\n";
+		cin.clear();  //clearing all error state flags.
+		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n'); // skip/ignore bad input  
+	}
+
+	switch (choice) {
+	case 1:
+		byteLen = 7;
+		ecparaPtr = new CK_BYTE[byteLen]{0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x23};
+		break;
+	case 2:
+		byteLen = 10;
+		ecparaPtr = new CK_BYTE[byteLen]{0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07};
+		break;
+	case 3:
+		byteLen = 7;
+		ecparaPtr = new CK_BYTE[byteLen]{0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x26};
+		break;
+	case 4:
+		byteLen = 10;
+		ecparaPtr = new CK_BYTE[byteLen]{0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x00, 0x14};
+		break;
+	case 5:
+		byteLen = 11;
+		ecparaPtr = new CK_BYTE[byteLen]{0x06, 0x09, 0x2b, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x0e};
+		break;
+	default:
+		cout << "Sorry, incorrect choice\n";
+	}
+
+
 	
 	if (!(retVal = load_library_HSM(libHandle, funclistPtr))) {
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		if (!(retVal = connect_slot(funclistPtr, hSession, usrPIN))) {
 			cout << "Connected to token successfully\n";
+			retVal = gen_EC_keypair(funclistPtr, hSession, ecparaPtr, byteLen,
+									&hPublic, &hPrivate);
 			if (!(retVal = disconnect_slot(funclistPtr, hSession))) {
 				cout << "Disconnected from token successfully\n";
 			}
