@@ -91,16 +91,17 @@ int main()
     CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
     CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle
 
-	cout << "For Elliptic Curve (EC) curve, please enter an integer from the following list\n"
+	cout << "For Elliptic Curve (EC) curve, we have\n"
 		 << "\t1. secp521r1\n"
 		 << "\t2. prime256v1\n"
 		 << "\t3. sect571k1\n"
 		 << "\t4. c2tnb431r1\n"
 		 << "\t5. brainpoolP512t1\n";
 
+	cout << "please enter 1 to 5 :: "; 
 	cin >> choice;
 	if (!cin.good()) {
-		cout << "Error, it is not integer\n";
+		cout << "Error not an integer\n";
 		cin.clear();  //clearing all error state flags.
 		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n'); // skip/ignore bad input  
 	}
@@ -128,6 +129,7 @@ int main()
 		break;
 	default:
 		cout << "Sorry, incorrect choice\n";
+		return -1;
 	}
 
 
