@@ -20,6 +20,8 @@
  * If a slot has not initialized, then to initialize a token slot, one can run the following command
  *      softhsm2-util --init-token --slot <slot_number> --label <text>
  * 
+ * Using p11tool to see the generated public/private keys, run the following command
+ * 		p11tool --provider /opt/softhsm2/lib/softhsm/libsofthsm2.so --login --list-all
 */
 
 
@@ -76,8 +78,7 @@ int main()
 	 * 		0609 2b24 0303 0208 0101 0e
 	 * 
 	*/
-    CK_BYTE ecpara[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x23};
-	CK_BYTE_PTR ecparaPtr = NULL_PTR;
+    CK_BYTE_PTR ecparaPtr = NULL_PTR;
 
     CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
     CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle

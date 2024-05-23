@@ -271,7 +271,7 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 											hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
 
     if (!retVal) {
-		cout << "Elliptic Curve (EC) keypair successfully generated where\n";
+		cout << "Elliptic Curve (EC) keypair successfully generated\n";
 	}
 	return retVal;    
 }
