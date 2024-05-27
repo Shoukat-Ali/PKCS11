@@ -59,7 +59,6 @@ bool is_nullptr(void * const ptr)
 */
 int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
-	const char* libPath = nullptr;
 	char* libError;
 	/**
 	 * Instead of reading the SoftHSM full path from user every time,
@@ -69,10 +68,19 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
      * 
      *  1. Open .profile file in your home directory
      *  2. Simple run the command in the working terminal
+	 * 
+	 * char *getenv(const char *name);
+	 * 
+	 * The getenv() function searches the environment list to find the
+	 * environment variable name, and returns a pointer to the corresponding value string.
+	 * 
+	 * The function returns a pointer to the value in the 
+	 * environment, or NULL if there is no match.
+	 * 
 	 * */
-	
-	libPath = getenv("SOFTHSM2_LIB");
-	if(libPath == nullptr) {
+
+	const char* libPath = getenv("SOFTHSM2_LIB");
+	if(!libPath) {
 		cout << "Error, SOFTHSM2_LIB environment variable is not set" << endl;
 		return 2;
 	}
@@ -84,6 +92,8 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 	 * returns an opaque "handle" for the loaded object
 	 * 
 	 * RTLD_NOW :: Relocations are performed when the object is loaded.
+	 * 
+	 * If dlopen() fails for any reason, it returns NULL. 
 	 * 
 	 */
 
@@ -125,7 +135,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 
 	// CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
 	CK_C_GetFunctionList C_GetFunctionList = reinterpret_cast<CK_C_GetFunctionList> (dlsym(libHandle, "C_GetFunctionList"));
-	libError = dlerror();
+	libError = dlerror();		// Recommended to save dlerror() return value
 	if (libError) {
 		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
 		return 3;
