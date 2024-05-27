@@ -29,6 +29,25 @@ int check_operation(const CK_RV rv, const char* message)
 }
 
 
+/**
+ * This function checks whether a given pointer is null of not.
+ * 
+ * ptr is a constant pointer to void type
+ * 
+ * If given pointer is null, then return true. Otherwise, faluse is returned.
+ * 
+*/
+bool is_nullptr(void * const ptr)
+{
+	if (ptr) {
+		return false;
+	}
+	cout << "Error, pointer is NULL\n";
+	return true;
+}
+
+
+
 
 /**
  * The function attempts to load SoftHSM library in order to use PKCS# 11 functions/API.
@@ -114,6 +133,11 @@ int display_slot_info(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SLOT_ID s
 	*/
 	CK_SLOT_INFO slotInfo;
 
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 4;
+	}
+
 	/**
 	 * CK_RV C_GetSlotInfo(CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo);
 	 * 
@@ -169,6 +193,11 @@ int display_token_info(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SLOT_ID 
 	*/
 	CK_TOKEN_INFO tokenInfo;
 
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 5;
+	}
+
 	/**
 	 * CK_RV C_GetTokenInfo(CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo);
 	 * 
@@ -203,10 +232,15 @@ int display_all_slot_token(const CK_FUNCTION_LIST_PTR funclistPtr)
 	int retVal = 0;
 	CK_ULONG slotsCount;
 	CK_SLOT_ID_PTR slotlistPtr = NULL_PTR;
+
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 6;
+	}
 	
 	if (check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize()")) {
 		// Operation failed
-		return 4;
+		return 6;
 	}
 
 	/**
