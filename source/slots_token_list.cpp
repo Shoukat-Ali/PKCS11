@@ -40,9 +40,9 @@ int check_operation(const CK_RV rv, const char* message)
 */
 int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
-	const char *libPath = nullptr;
+	char* libError;
 	
-	libPath = getenv("SOFTHSM2_LIB");
+	const char* libPath = getenv("SOFTHSM2_LIB");
 	if(libPath == nullptr) {
 		cout << "Error, SOFTHSM2_LIB environment variable is not set" << endl;
 		return 2;
@@ -53,9 +53,11 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 		cout << "Error, failed to load SoftHSM library into memory from path " << libPath << endl;
 		return 3;
 	}
+	dlerror();	// Required before calling dlsym() to clear any existing error
 	
     CK_C_GetFunctionList C_GetFunctionList = reinterpret_cast<CK_C_GetFunctionList> (dlsym(libHandle, "C_GetFunctionList"));
-	if (!C_GetFunctionList) {
+	libError = dlerror();		// Recommended to save dlerror() return value
+	if (libError) {
 		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
 		return 3;
 	}
