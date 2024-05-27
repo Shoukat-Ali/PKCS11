@@ -21,7 +21,7 @@
  *      make clean_test_STList
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_slots_list.cpp ../source/slots_list.cpp -o test_STList -I../include
+ *      g++ -Wall -Werror test_slots_token_list.cpp ../source/slots_token_list.cpp -o test_STList -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
