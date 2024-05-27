@@ -31,6 +31,24 @@ int check_operation(const CK_RV rv, const char* message)
 
 
 /**
+ * This function checks whether a given pointer is null of not.
+ * 
+ * ptr is a constant pointer to void type
+ * 
+ * If given pointer is null, then return true. Otherwise, faluse is returned.
+ * 
+*/
+bool is_nullptr(void * const ptr)
+{
+	if (ptr) {
+		return false;
+	}
+	cout << "Error, pointer is NULL\n";
+	return true;
+}
+
+
+/**
  * The function attempts to load SoftHSM library in order to use PKCS# 11 functions/API.
  * 
  * libHandle is a void pointer for SoftHSM library handle
@@ -83,6 +101,11 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 	CK_SLOT_ID slotID = 0;
 	int retVal = 0;
 
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 3;
+	}
+
 	retVal = check_operation(funclistPtr->C_Initialize(NULL_PTR), "C_Initialize()");
 	if (!retVal) {
 		// C_Initialize() was successful
@@ -127,6 +150,11 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
 {
 	int retVal = 0;
+	
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 4;
+	}
 	retVal = check_operation(funclistPtr->C_Logout(hSession), "C_Logout()");
 	if (!retVal) {
 		// C_Logout() was successful
@@ -175,6 +203,12 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 					CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr)
 {
 	int retVal = 0;
+
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 5;
+	}
+
 	/**
 	 * A mechanism specifies precisely how a certain cryptographic process is to be performed.
 	 * CK_MECHANISM is a structure that specifies a particular mechanism and any
