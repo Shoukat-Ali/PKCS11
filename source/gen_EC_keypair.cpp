@@ -72,7 +72,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 		return 2;
 	}
 	
-    CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
+	CK_C_GetFunctionList C_GetFunctionList = reinterpret_cast<CK_C_GetFunctionList> (dlsym(libHandle, "C_GetFunctionList"));
 	if (!C_GetFunctionList) {
 		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
 		return 2;
