@@ -278,6 +278,13 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 */
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
 {
+	int retVal = 0;
+
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 4;
+	}
+
 	/**
 	 * CK_RV C_Logout(CK_SESSION_HANDLE hSession);
 	 * 
@@ -287,41 +294,35 @@ int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
 	 * not be the case that those operations are still active. Therefore, before logging out, 
 	 * any active operations should be finished.
 	*/
-	if (check_operation(funclistPtr->C_Logout(hSession), "C_Logout()")) {
-		// Operation failed
-		return 4;
+	retVal = check_operation(funclistPtr->C_Logout(hSession), "C_Logout()");
+	if (!retVal) {
+		// C_Logout() was successful
+		/**
+		 * CK_RV C_CloseSession(CK_SESSION_HANDLE hSession);
+		 * 
+		 * C_CloseSession closes a session between an application and a token. 
+		 * hSession is the session’s handle.
+		 * 
+		 * When a session is closed, all session objects created by the session are destroyed
+		 * automatically, even if the application has other sessions “using” the objects
+		*/
+		retVal = check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion()");
+		
+		/**
+		 * CK_RV C_Finalize(CK_VOID_PTR pReserved);
+		 * 
+		 * C_Finalize is called to indicate that an application is finished with the Cryptoki library.
+		 * It should be the last Cryptoki call made by an application. The pReserved parameter is
+		 * reserved for future versions; for this version, it should be set to NULL_PTR 
+		 * (if C_Finalize is called with a non-NULL_PTR value for pReserved, it should return the
+		 * value CKR_ARGUMENTS_BAD.
+		 * If several applications are using Cryptoki, each one should call C_Finalize. Each
+		 * application’s call to C_Finalize should be preceded by a single call to C_Initialize;
+		*/
+		retVal = check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize()");
 	}
 	
-	/**
-	 * CK_RV C_CloseSession(CK_SESSION_HANDLE hSession);
-	 * 
-	 * C_CloseSession closes a session between an application and a token. 
-	 * hSession is the session’s handle.
-	 * 
-	 * When a session is closed, all session objects created by the session are destroyed
-	 * automatically, even if the application has other sessions “using” the objects
-	*/
-	if (check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion()")) {
-		// Operation failed
-		return 4;
-	}
-	
-	/**
-	 * CK_RV C_Finalize(CK_VOID_PTR pReserved);
-	 * 
-	 * C_Finalize is called to indicate that an application is finished with the Cryptoki library.
-	 * It should be the last Cryptoki call made by an application. The pReserved parameter is
-	 * reserved for future versions; for this version, it should be set to NULL_PTR 
-	 * (if C_Finalize is called with a non-NULL_PTR value for pReserved, it should return the
-	 * value CKR_ARGUMENTS_BAD.
-	 * If several applications are using Cryptoki, each one should call C_Finalize. Each
-	 * application’s call to C_Finalize should be preceded by a single call to C_Initialize;
-	*/
-	if (check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize()")) {
-		// Operation failed
-		return 4;
-	}
-	return 0;
+	return retVal;
 }
 
 
