@@ -59,7 +59,8 @@ bool is_nullptr(void * const ptr)
 */
 int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
-	const char *libPath = nullptr;
+	const char* libPath = nullptr;
+	char* libError;
 	/**
 	 * Instead of reading the SoftHSM full path from user every time,
 	 * it's better to set an environment variable 
@@ -91,24 +92,41 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 		cout << "Error, failed to load SoftHSM library into memory from path " << libPath << endl;
 		return 3;
 	}
-	
-    /**
+
+	/**
+	 * char *dlerror(void);
+	 * 
+	 * The function dlerror() returns a human readable string describing the most recent error 
+	 * that occurred from dlopen(), dlsym() or dlclose() since the last call to dlerror(). 
+	 * It returns NULL if no errors have occurred since initialization or since it was last called. 
+	 * 
+	*/    
+	dlerror();	// This call is required before calling dlsym() to clear any existing error
+
+	/**
 	 * dlsym, dlvsym - obtain address of a symbol in a shared object or executable
 	 * 
 	 * void *dlsym(void *restrict handle, const char *restrict symbol);
 	 * 
-	 * The function dlsym() takes a "handle" of a dynamic loaded shared object 
-	 * returned by dlopen(3) along with a null-terminated symbol name, 
-	 * and returns the address where that symbol is loaded into memory. 
-	 * If the symbol is not found, in the specified object or any of the shared objects 
-	 * that were automatically loaded by dlopen(3) when that object was loaded, dlsym() returns NULL
+	 * The function dlsym() takes a "handle" of a dynamic library returned by dlopen() 
+	 * and the null-terminated symbol name, returning the address where that symbol is 
+	 * loaded into memory. If the symbol is not found, in the specified library or 
+	 * any of the libraries that were automatically loaded by dlopen() when that library 
+	 * was loaded, dlsym() returns NULL. (The search performed by dlsym() is breadth first 
+	 * through the dependency tree of these libraries.) Since the value of the symbol could actually 
+	 * be NULL (so that a NULL return from dlsym() need not indicate an error), 
+	 * the correct way to test for an error is to call dlerror() to clear any old error conditions, 
+	 * then call dlsym(), and then call dlerror() again, saving its return value into a variable, 
+	 * and check whether this saved value is not NULL. 
 	 * 
 	 * On success, these functions return the address associated with symbol. 
 	 * On failure, they return NULL; the cause of the error can be diagnosed using dlerror(3).
 	*/
+
 	// CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
 	CK_C_GetFunctionList C_GetFunctionList = reinterpret_cast<CK_C_GetFunctionList> (dlsym(libHandle, "C_GetFunctionList"));
-	if (!C_GetFunctionList) {
+	libError = dlerror();
+	if (libError) {
 		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
 		return 3;
 	}
