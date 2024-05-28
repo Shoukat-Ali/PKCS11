@@ -164,21 +164,21 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 	
 
 	CK_ATTRIBUTE attribPub[] = {
-        {CKA_TOKEN,             &yes,               sizeof(yes)},
-        {CKA_PRIVATE,           &no,                sizeof(no)},
-        {CKA_VERIFY,            &yes,               sizeof(yes)},
-        {CKA_ENCRYPT,           &yes,               sizeof(yes)},
-        {CKA_EC_PARAMS,			ecPara,		    	ecParaSZ},
-        {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
+        {CKA_TOKEN,			&no,		sizeof(no)},
+        {CKA_PRIVATE,		&no,		sizeof(no)},
+        {CKA_VERIFY,		&yes,		sizeof(yes)},
+        {CKA_ENCRYPT,		&yes,		sizeof(yes)},
+        {CKA_EC_PARAMS,		ecPara,		ecParaSZ},
+        {CKA_LABEL,			&pubLabel,	sizeof(pubLabel)}
     };
     
     CK_ATTRIBUTE attribPri[] = {
-        {CKA_TOKEN,             &yes,               sizeof(yes)},
-        {CKA_PRIVATE,           &yes,               sizeof(yes)},
-        {CKA_SIGN,              &yes,               sizeof(yes)},
-        {CKA_DECRYPT,           &yes,               sizeof(yes)},
-        {CKA_SENSITIVE,         &yes,               sizeof(yes)},
-        {CKA_LABEL,             &prvLabel,          sizeof(prvLabel)}
+        {CKA_TOKEN,			&no,		sizeof(no)},
+        {CKA_PRIVATE,		&yes,		sizeof(yes)},
+        {CKA_SIGN,			&yes,		sizeof(yes)},
+        {CKA_DECRYPT,		&yes,		sizeof(yes)},
+        {CKA_SENSITIVE,		&yes,		sizeof(yes)},
+        {CKA_LABEL,			&prvLabel,	sizeof(prvLabel)}
     };
     
 	retVal = check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, 
@@ -190,4 +190,59 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 		cout << "Elliptic Curve Digital Signature Algorithm (ECDSA) keypair successfully generated\n";
 	}
 	return retVal;    
+}
+
+
+
+/**
+ * This function attempts to disconnects from a token.
+ * First, logs out the user from the token/slot; 
+ * Second, closes the current session and; 
+ * Finally, finalizes the SoftHSM library to indicate that application is finished with the Cryptoki library
+ * 
+ * funclistPtr is a const pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
+{
+	int retVal = 0;
+	
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 4;
+	}
+	retVal = check_operation(funclistPtr->C_Logout(hSession), "C_Logout()");
+	if (!retVal) {
+		// C_Logout() was successful
+		retVal = check_operation(funclistPtr->C_CloseSession(hSession), "C_CloseSesion()");
+		retVal = check_operation(funclistPtr->C_Finalize(NULL_PTR), "C_Finalize()");
+	}
+	
+	return retVal;
+}
+
+
+/**
+ * The functions attempts to perform cleanup by freeing memory/resources
+ * First, decrements the reference count on SoftHSM library handle
+ * Second, assigning null to the pointer to the list of PKCS #11 function
+ * Lastily, removing/clearing the user PIN
+ * 
+ * libHandle is an alias of void pointer for SoftHSM library handle
+ * funclistPtr is an alias of pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * usrPIN is an alias of user PIN
+ * 
+ * The function does not return anything 
+*/
+void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN)
+{
+	cout << "Clean up and free the resources\n";
+	if (dlclose(libHandle)) {
+		cout << "Error, dlclose() on softHSM library reference count\n";
+	}
+    funclistPtr = NULL_PTR;
+    // Removes all characters from the usrPIN string and all pointers, references, and iterators are invalidated. 
+    usrPIN.clear();
 }
