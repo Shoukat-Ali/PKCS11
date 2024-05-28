@@ -172,7 +172,7 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
         {CKA_LABEL,			&pubLabel,	sizeof(pubLabel)}
     };
     
-    CK_ATTRIBUTE attribPri[] = {
+    CK_ATTRIBUTE attribPrv[] = {
         {CKA_TOKEN,			&no,		sizeof(no)},
         {CKA_PRIVATE,		&yes,		sizeof(yes)},
         {CKA_SIGN,			&yes,		sizeof(yes)},
@@ -183,7 +183,7 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
     
 	retVal = check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, 
 											attribPub, sizeof(attribPub) / sizeof(*attribPub),
-											attribPri, sizeof(attribPri) / sizeof(*attribPri),
+											attribPrv, sizeof(attribPrv) / sizeof(*attribPrv),
 											hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
 
     if (!retVal) {

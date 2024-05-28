@@ -254,21 +254,21 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 	*/
 
     CK_ATTRIBUTE attribPub[] = {
-        {CKA_TOKEN,             &yes,               sizeof(yes)},
-        {CKA_PRIVATE,           &no,                sizeof(no)},
-        {CKA_VERIFY,            &yes,               sizeof(yes)},
-        {CKA_ENCRYPT,           &yes,               sizeof(yes)},
-        {CKA_EC_PARAMS,			ecPara,		    	ecParaSZ},
-        {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
+        {CKA_TOKEN,				&yes,			sizeof(yes)},
+        {CKA_PRIVATE,			&no,			sizeof(no)},
+        {CKA_VERIFY,			&yes,			sizeof(yes)},
+        {CKA_ENCRYPT,			&yes,			sizeof(yes)},
+        {CKA_EC_PARAMS,			ecPara,			ecParaSZ},
+        {CKA_LABEL,				&pubLabel,		sizeof(pubLabel)}
     };
     
-    CK_ATTRIBUTE attribPri[] = {
-        {CKA_TOKEN,             &yes,               sizeof(yes)},
-        {CKA_PRIVATE,           &yes,               sizeof(yes)},
-        {CKA_SIGN,              &yes,               sizeof(yes)},
-        {CKA_DECRYPT,           &yes,               sizeof(yes)},
-        {CKA_SENSITIVE,         &yes,               sizeof(yes)},
-        {CKA_LABEL,             &prvLabel,          sizeof(prvLabel)}
+    CK_ATTRIBUTE attribPrv[] = {
+        {CKA_TOKEN,				&yes,			sizeof(yes)},
+        {CKA_PRIVATE,			&yes,			sizeof(yes)},
+        {CKA_SIGN,				&yes,			sizeof(yes)},
+        {CKA_DECRYPT,			&yes,			sizeof(yes)},
+        {CKA_SENSITIVE,			&yes,			sizeof(yes)},
+        {CKA_LABEL,				&prvLabel,		sizeof(prvLabel)}
     };
     
 	/**
@@ -303,7 +303,7 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 	*/
 	retVal = check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, 
 											attribPub, sizeof(attribPub) / sizeof(*attribPub),
-											attribPri, sizeof(attribPri) / sizeof(*attribPri),
+											attribPrv, sizeof(attribPrv) / sizeof(*attribPrv),
 											hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
 
     if (!retVal) {
