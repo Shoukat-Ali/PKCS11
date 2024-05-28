@@ -6,8 +6,10 @@
  *          i.      C_Initialize() 
  *          ii.     C_OpenSession() 
  *          iii.    C_Login()
- * 		3. Generate Elliptic Curve (EC) keypair (Public and Private keys) by invoking
- *          i.      C_GenerateKeyPair() 
+ * 		3. Generate Elliptic Curve Digital Signature Algorithm (ECDSA) keypair (Public and Private keys) by invoking
+ *          i.      C_GenerateKeyPair()
+ *          ii.     Sign
+ *          ii.     Verify 
  * 		4. Disconnect from a connect slot using the followings
  *          i.      C_Logout() 
  *          ii.     C_CloseSession() 
@@ -17,8 +19,8 @@
 */
 
 
-#ifndef EC_KEYPAIR_HPP
-#define EC_KEYPAIR_HPP
+#ifndef SIGN_VERIFY_ECDSA_HPP
+#define SIGN_VERIFY_ECDSA_HPP
 
 #include <string>
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
@@ -31,9 +33,9 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession);
 
-int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
-					CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
-					CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr);
+int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+					    CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
+					    CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr);
 
 void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN);
 
