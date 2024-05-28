@@ -37,7 +37,7 @@ int check_operation(const CK_RV rv, const char* message)
  * If given pointer is null, then return true. Otherwise, faluse is returned.
  * 
 */
-bool is_nullptr(void * const ptr)
+inline bool is_nullptr(void * const ptr)
 {
 	if (ptr) {
 		return false;
