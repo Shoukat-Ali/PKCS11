@@ -99,7 +99,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession, std::string& usrPIN)
+int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN)
 {
 	CK_SLOT_ID slotID = 0;
 	int retVal = 0;
@@ -209,7 +209,7 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
 */
 int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
 						const CK_OBJECT_HANDLE& hPrv, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
-						CK_BYTE_PTR sigPtr, CK_ULONG_PTR sigLenPtr)
+						CK_BYTE_PTR sigPtr, CK_ULONG sigLen)
 {
 	int retVal = 0;
 
@@ -224,7 +224,7 @@ int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSIO
 	 * This mechanism does not have a parameter
 	 * 
 	 * */
-	CK_MECHANISM signMech = {CKM_ECDSA};
+	// CK_MECHANISM signMech = {CKM_ECDSA};
 
 	/**
 	 * CK_RV C_SignInit(CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism, CK_OBJECT_HANDLE hKey);
@@ -260,11 +260,68 @@ int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSIO
 		 * pulSignatureLen points to the location that holds the length of the signature.
 		 * 
 		*/
-		retVal = check_operation(funclistPtr->C_Sign(hSession, dataPtr, dataLen, sigPtr, sigLenPtr), "C_Sign()");
+		retVal = check_operation(funclistPtr->C_Sign(hSession, dataPtr, dataLen, sigPtr, &sigLen), "C_Sign()");
 	}
 	return retVal;
 }
 
+
+
+/**
+ * The function verifies the signed data using CKM_ECDSA
+ * Note that public key should be used for verifying the signature
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+ * 
+*/
+int verify_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
+							const CK_OBJECT_HANDLE& hPub, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
+							CK_BYTE_PTR sigPtr, CK_ULONG sigLen)
+{
+	int retVal = 0;
+	// CK_MECHANISM mech = {CKM_ECDSA};
+	
+	/**
+	 * CK_RV C_VerifyInit(CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism, CK_OBJECT_HANDLE hKey);
+	 * 
+	 * C_VerifyInit() initializes a verification operation, where the signature is an appendix to
+	 * the data. 
+	 * 
+	 * hSession is the session’s handle; 
+	 * pMechanism points to the structure that specifies the verification mechanism; 
+	 * hKey is the handle of the verification key.
+	 * 
+	 * The CKA_VERIFY attribute of the verification key, which indicates whether the key
+	 * supports verification where the signature is an appendix to the data, must be CK_TRUE.
+	 * 
+	 * After calling C_VerifyInit(), the application can either call C_Verify() to verify a signature
+	 * on data in a single part; or call C_VerifyUpdate() one or more times, followed by
+	 * C_VerifyFinal(), to verify a signature on data in multiple parts.
+	 * 
+	*/
+	retVal = check_operation(funclistPtr->C_VerifyInit(hSession, &signMech, hPub), "C_VerifyInit()");
+	if (!retVal) {
+		// Signature verification operation successfully initialized
+		/**
+		 * CK_RV C_Verify(CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData,
+		 * 					CK_ULONG ulDataLen, CK_BYTE_PTR pSignature,
+		 * 					CK_ULONG ulSignatureLen);
+		 * 
+		 * C_Verify() verifies a signature in a single-part operation, where the signature is an
+		 * appendix to the data. 
+		 * 
+		 * hSession is the session’s handle; 
+		 * pData points to the data;
+		 * ulDataLen is the length of the data; 
+		 * pSignature points to the signature; 
+		 * ulSignatureLen is the length of the signature.
+		 * 
+		 * 
+		*/
+		retVal = check_operation(funclistPtr->C_Verify(hSession, dataPtr, dataLen, sigPtr, sigLen), "C_Verify");
+	}
+	return retVal;
+}
 
 
 /**
@@ -278,7 +335,7 @@ int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSIO
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession)
+int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
 {
 	int retVal = 0;
 	
