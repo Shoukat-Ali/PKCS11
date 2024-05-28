@@ -99,7 +99,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN)
+int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession, std::string& usrPIN)
 {
 	CK_SLOT_ID slotID = 0;
 	int retVal = 0;
@@ -142,10 +142,17 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
  * The function generates Elliptic Curve Digital Signature Algorithm (ECDSA) keypair 
  * based on the given parameters.
  * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * ecPara is a const pointer to CK_BYTE
+ * ecParaSZ represents the byte-length of ecPara
+ * hPubPtr is a pointer to public key handle
+ * hPrvPtr is a pointer to private key handle
+ * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  *  
 */
-int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
 						CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
 						CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr)
 {
@@ -195,6 +202,72 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 
 
 /**
+ * The function signs given data using CKM_ECDSA
+ * Note that private key should be used for signing
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
+						const CK_OBJECT_HANDLE& hPrv, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
+						CK_BYTE_PTR sigPtr, CK_ULONG_PTR sigLenPtr)
+{
+	int retVal = 0;
+
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 6;
+	}
+
+	/**
+	 * The CKM_ECDSA denotes ECDSA without hashing mechanism.
+	 * It is a mechanism for single-part signatures and verification for ECDSA
+	 * This mechanism does not have a parameter
+	 * 
+	 * */
+	CK_MECHANISM signMech = {CKM_ECDSA};
+
+	/**
+	 * CK_RV C_SignInit(CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism, CK_OBJECT_HANDLE hKey);
+	 * 
+	 * C_SignInit() initializes a signature operation, where the signature is an appendix to the data. 
+	 * 
+	 * hSession is the session’s handle; 
+	 * pMechanism points to the signature mechanism;
+	 * hKey is the handle of the signature key.
+	 * 
+	 * The CKA_SIGN attribute of the signature key, which indicates whether the key supports
+	 * signatures with appendix, must be CK_TRUE.
+	 * 
+	 * After calling C_SignInit(), the application can either call C_Sign() to sign in a single part;
+	 * or call C_SignUpdate() one or more times, followed by C_SignFinal(), to sign data in
+	 * multiple parts.
+	 * 
+	*/
+	retVal = check_operation(funclistPtr->C_SignInit(hSession, &signMech, hPrv), "C_SignInit()");
+	if (!retVal) {
+		// Signature mechnism has been successfully initialized
+		/**
+		 * CK_RV C_Sign(CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData,
+		 * 				CK_ULONG ulDataLen, CK_BYTE_PTR pSignature,
+		 * 				CK_ULONG_PTR pulSignatureLen);
+		 * 
+		 * C_Sign() signs data in a single part, where the signature is an appendix to the data.
+		 * 
+		 * hSession is the session’s handle; 
+		 * pData points to the data; 
+		 * ulDataLen is the length of the data; 
+		 * pSignature points to the location that receives the signature; 
+		 * pulSignatureLen points to the location that holds the length of the signature.
+		 * 
+		*/
+		retVal = check_operation(funclistPtr->C_Sign(hSession, dataPtr, dataLen, sigPtr, sigLenPtr), "C_Sign()");
+	}
+	return retVal;
+}
+
+
+
+/**
  * This function attempts to disconnects from a token.
  * First, logs out the user from the token/slot; 
  * Second, closes the current session and; 
@@ -205,7 +278,7 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
+int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession)
 {
 	int retVal = 0;
 	

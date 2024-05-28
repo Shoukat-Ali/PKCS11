@@ -197,6 +197,14 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
  * The function generates Elliptic Curve (EC) keypair 
  * based on the given parameters.
  * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * ecPara is a const pointer to CK_BYTE
+ * ecParaSZ represents the byte-length of ecPara
+ * hPubPtr is a pointer to public key handle
+ * hPrvPtr is a pointer to private key handle
+
+ * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  *  
 */
