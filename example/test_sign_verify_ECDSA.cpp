@@ -46,7 +46,15 @@ using std::endl;
 using std::cin;
 
 
-
+/**
+ * The function prints given byte array data in hexadecimal format
+*/
+inline void print_hex(CK_BYTE* data, size_t byteLen)
+{
+	for(size_t i = 0; i < byteLen; ++i) 
+        cout << std::hex << std::uppercase << (data[i] & 0xFF);
+    cout << endl;
+}
 
 
 
@@ -62,11 +70,11 @@ int main()
     CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
     CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle
     CK_BYTE_PTR ecparaPtr = NULL_PTR;
-    CK_BYTE_PTR dataPtr = NULL_PTR;
     CK_BYTE_PTR sigPtr = NULL_PTR;
     CK_ULONG paraLen = 0;       // ECDSA parameter byte-length
     CK_ULONG sigLen = 0;        // ECDSA signature byte-length
-    
+    CK_BYTE data[] = "This data is for testing only";
+    CK_ULONG dataLen = sizeof(data) - 1;    // Excluding the null character
 
 	cout << "For ECDSA, we have\n"
 		 << "\t1. secp521r1\n"
@@ -120,9 +128,6 @@ int main()
 	}
 
 
-	CK_ULONG dataLen = sizeof("This data is for testing only") - 1;
-    dataPtr = new CK_BYTE[dataLen];
-
 	if (!(retVal = load_library_HSM(libHandle, funclistPtr))) {
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		if (!(retVal = connect_slot(funclistPtr, hSession, usrPIN))) {
@@ -131,11 +136,15 @@ int main()
 									&hPublic, &hPrivate);
             if (!retVal) {
                 // Private and Public keys were successfully generated
-                retVal = sign_data_no_hashing(funclistPtr, hSession, hPrivate, dataPtr, 
+                cout << "Data to be signed (hex):: ";
+                print_hex(data, dataLen);
+                retVal = sign_data_no_hashing(funclistPtr, hSession, hPrivate, data, 
                                                 dataLen, sigPtr, sigLen);
                 if (!retVal) {
                     // Signature was successfully generated
-                    retVal = verify_data_no_hashing(funclistPtr, hSession, hPublic, dataPtr,
+                    cout << "Produced signature (hex) :: ";
+                    print_hex(sigPtr, sigLen);
+                    retVal = verify_data_no_hashing(funclistPtr, hSession, hPublic, data,
                                                     dataLen, sigPtr, sigLen);
                 }
             }
@@ -147,9 +156,7 @@ int main()
 	free_resource(libHandle, funclistPtr, usrPIN);
     dataLen = 0;
     sigLen = 0;
-    delete[] dataPtr;
     delete[] sigPtr;
-    
     paraLen = 0;
     delete[] ecparaPtr;
 	
