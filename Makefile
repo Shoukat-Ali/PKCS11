@@ -28,10 +28,17 @@ SRC_ECKEYPAIR = $(addprefix $(SRC_DIR),gen_EC_keypair.cpp)
 MAIN_ECKEYPAIR = $(addprefix $(MAIN_DIR),test_gen_EC_keypair.cpp)
 
 
+# Elliptic Curve (EC) keypair generation
+HDR_ECDSA = $(addprefix $(HEADER_DIR),sign_verify_ECDSA.hpp)
+SRC_ECDSA = $(addprefix $(SRC_DIR),sign_verify_ECDSA.cpp)
+MAIN_ECDSA = $(addprefix $(MAIN_DIR),test_sign_verify_ECDSA.cpp)
+
+
 #Object files
 OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o
 OBJS_STLIST = main_STList.o src_STList.o
 OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o
+OBJS_ECDSA = main_ECDSA.o src_ECDSA.o
 
 
 # Connect to and disconnect from a token
@@ -67,6 +74,18 @@ test_ECKeypair: $(OBJS_ECKEYPAIR)
 	$(CXX) $^ -o $@
 
 
+# EC keypair files
+main_ECDSA.o: $(MAIN_ECDSA)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+src_ECDSA.o: $(SRC_ECDSA) $(HDR_ECDSA)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+test_ECDSA: $(OBJS_ECDSA)
+	$(CXX) $^ -o $@
+
+
+
 .PHONY : clean
 clean_test_ConnDis:
 	rm test_ConnDis $(OBJS_CONNDIS)
@@ -76,3 +95,6 @@ clean_test_STList:
 
 clean_test_ECKeypair:
 	rm test_ECKeypair $(OBJS_ECKEYPAIR)
+
+clean_test_ECDSA:
+	rm test_ECDSA $(OBJS_ECDSA)

@@ -136,16 +136,21 @@ int main()
 									&hPublic, &hPrivate);
             if (!retVal) {
                 // Private and Public keys were successfully generated
-                cout << "Data to be signed (hex):: ";
+                cout << "\tData to be signed (hex):: ";
                 print_hex(data, dataLen);
                 retVal = sign_data_no_hashing(funclistPtr, hSession, hPrivate, data, 
                                                 dataLen, sigPtr, sigLen);
                 if (!retVal) {
                     // Signature was successfully generated
-                    cout << "Produced signature (hex) :: ";
+                    cout << "\tProduced signature (hex) :: ";
                     print_hex(sigPtr, sigLen);
+                    // For testing only changing one byte of signature
+                    // sigPtr[0] ^= 0xFF;
                     retVal = verify_data_no_hashing(funclistPtr, hSession, hPublic, data,
                                                     dataLen, sigPtr, sigLen);
+                    if (!retVal) {
+                        cout << "\tSignature correctly verified!\n";
+                    }
                 }
             }
 			if (!(retVal = disconnect_slot(funclistPtr, hSession))) {
