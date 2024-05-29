@@ -45,6 +45,15 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
 					    CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
 					    CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr);
 
+
+int verify_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
+							const CK_OBJECT_HANDLE& hPub, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
+							CK_BYTE_PTR sigPtr, CK_ULONG sigLen);
+
+int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
+						const CK_OBJECT_HANDLE& hPrv, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
+						CK_BYTE_PTR sigPtr, CK_ULONG sigLen);
+
 void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN);
 
 #endif

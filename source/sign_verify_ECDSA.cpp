@@ -205,6 +205,14 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
  * The function signs given data using CKM_ECDSA
  * Note that private key should be used for signing
  * 
+ * funclistPtr is a pointer to the const list of functions i.e., CK_FUNCTION_LIST_PTR 
+ * hSession is an alias of constant session ID/handle
+ * Prv is an alias of constant private key handle 
+ * dataPtr is a pointer to byte array of data to be signed
+ * dataLen is a constant unsigned long representing byte-length of data
+ * sigPtr is a pointer to byte array of signature to be produced
+ * sigLen is an unsigned long representing the byte-length of array where signature will be saved
+ * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
 int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
@@ -270,6 +278,14 @@ int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSIO
 /**
  * The function verifies the signed data using CKM_ECDSA
  * Note that public key should be used for verifying the signature
+ * 
+ * funclistPtr is a pointer to the constant list of functions i.e., CK_FUNCTION_LIST_PTR 
+ * hSession is an alias of constant session ID/handle
+ * Prv is an alias of constant public key handle 
+ * dataPtr is a pointer to byte array of data that was signed
+ * dataLen is a constant unsigned long representing byte-length of data
+ * sigPtr is a pointer to byte array of given signature
+ * sigLen is an unsigned long representing the byte-length of array where signature was stored
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  * 
