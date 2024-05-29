@@ -25,14 +25,6 @@
 #include <string>
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 
-/**
- * The CKM_ECDSA denotes ECDSA without hashing mechanism.
- * It is a mechanism for single-part signatures and verification for ECDSA
- * This mechanism does not have a parameter
- * 
- * */
-CK_MECHANISM signMech = {CKM_ECDSA};
-
 int check_operation(const CK_RV rv, const char* message);
 
 int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
@@ -42,17 +34,17 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession);
 
 int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
-					    CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
+					    CK_BYTE_PTR const ecPara, const CK_ULONG ecParaSZ,
 					    CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr);
 
-
-int verify_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
-							const CK_OBJECT_HANDLE& hPub, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
-							CK_BYTE_PTR sigPtr, CK_ULONG sigLen);
 
 int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
 						const CK_OBJECT_HANDLE& hPrv, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
 						CK_BYTE_PTR sigPtr, CK_ULONG sigLen);
+
+int verify_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
+							const CK_OBJECT_HANDLE& hPub, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
+							CK_BYTE_PTR sigPtr, CK_ULONG sigLen);
 
 void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN);
 

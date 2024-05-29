@@ -7,6 +7,13 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+/**
+ * The CKM_ECDSA denotes ECDSA without hashing mechanism.
+ * It is a mechanism for single-part signatures and verification for ECDSA
+ * This mechanism does not have a parameter
+ * 
+ * */
+CK_MECHANISM signMech = {CKM_ECDSA};
 
 
 /**
@@ -153,7 +160,7 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
  *  
 */
 int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
-						CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
+						CK_BYTE_PTR const ecPara, const CK_ULONG ecParaSZ,
 						CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr)
 {
 	int retVal = 0;
@@ -171,21 +178,21 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
 	
 
 	CK_ATTRIBUTE attribPub[] = {
-        {CKA_TOKEN,			&no,		sizeof(no)},
-        {CKA_PRIVATE,		&no,		sizeof(no)},
-        {CKA_VERIFY,		&yes,		sizeof(yes)},
-        {CKA_ENCRYPT,		&yes,		sizeof(yes)},
-        {CKA_EC_PARAMS,		ecPara,		ecParaSZ},
-        {CKA_LABEL,			&pubLabel,	sizeof(pubLabel)}
+        {CKA_TOKEN,				&no,			sizeof(no)},
+        {CKA_PRIVATE,			&no,			sizeof(no)},
+        {CKA_VERIFY,			&yes,			sizeof(yes)},
+        {CKA_ENCRYPT,			&yes,			sizeof(yes)},
+        {CKA_ECDSA_PARAMS,		ecPara,			ecParaSZ},
+        {CKA_LABEL,				&pubLabel,		sizeof(pubLabel)}
     };
     
     CK_ATTRIBUTE attribPrv[] = {
-        {CKA_TOKEN,			&no,		sizeof(no)},
-        {CKA_PRIVATE,		&yes,		sizeof(yes)},
-        {CKA_SIGN,			&yes,		sizeof(yes)},
-        {CKA_DECRYPT,		&yes,		sizeof(yes)},
-        {CKA_SENSITIVE,		&yes,		sizeof(yes)},
-        {CKA_LABEL,			&prvLabel,	sizeof(prvLabel)}
+        {CKA_TOKEN,				&no,			sizeof(no)},
+        {CKA_PRIVATE,			&yes,			sizeof(yes)},
+        {CKA_SIGN,				&yes,			sizeof(yes)},
+        {CKA_DECRYPT,			&yes,			sizeof(yes)},
+        {CKA_SENSITIVE,			&yes,			sizeof(yes)},
+        {CKA_LABEL,				&prvLabel,		sizeof(prvLabel)}
     };
     
 	retVal = check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mech, 
@@ -214,6 +221,12 @@ int gen_ECDSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_H
  * sigLen is an unsigned long representing the byte-length of array where signature will be saved
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+ * 
+ * Note that the signature byte-length (sigLen) should be set according to respective ECDSA
+ * If one doesn't want to set sigLen in advance, then one can call C_Sign() twice
+ * and in that case make sure that sigLen gets updated after returing to calling function
+ * The first call should be used to set sigLen where sigPtr will be NULL
+ * The second call should be used to compute the signature 
 */
 int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSION_HANDLE& hSession,
 						const CK_OBJECT_HANDLE& hPrv, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
@@ -296,6 +309,11 @@ int verify_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESS
 {
 	int retVal = 0;
 	// CK_MECHANISM mech = {CKM_ECDSA};
+	
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 7;
+	}
 	
 	/**
 	 * CK_RV C_VerifyInit(CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism, CK_OBJECT_HANDLE hKey);
