@@ -20,8 +20,8 @@
 */
 
 
-#ifndef AES_KEY_HPP
-#define AES_KEY_HPP
+#ifndef AES_KEYS_HPP
+#define AES_KEYS_HPP
 
 #include <string>
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
@@ -31,6 +31,9 @@ int check_operation(const CK_RV rv, const char* message);
 int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN);
+
+int gen_AES_128_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+					CK_OBJECT_HANDLE_PTR keyhandPtr);
 
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession);
 

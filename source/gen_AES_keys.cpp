@@ -148,6 +148,7 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
  * 
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
+ * keyhandPtr is a pointer to secret key handle
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
