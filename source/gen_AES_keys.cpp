@@ -1,7 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
-#include "../header/gen_AES_key.hpp" 
+#include "../header/gen_AES_keys.hpp" 
 
 using std::cout; 
 using std::cin;
@@ -143,6 +143,52 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 	
 	return retVal;
 }
+
+/**
+ * The function generates AES 128-bit key
+ * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+*/
+int gen_AES_128_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession)
+{
+	int retVal = 0;
+
+	// Checking whether funclistPtr is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 4;
+	}
+
+    CK_MECHANISM keyMech = {CKM_AES_KEY_GEN};
+    CK_BBOOL yes = CK_TRUE;
+    CK_BBOOL no = CK_FALSE;
+    CK_UTF8CHAR keyLabel[] = "AES 128-bit key";
+    CK_ULONG keyLen = 16;		// 128-bit is equal to 16-byte
+
+    CK_ATTRIBUTE keyAttrb[] = {
+		{CKA_TOKEN,				&no,			sizeof(no)},
+        {CKA_PRIVATE,			&yes,			sizeof(yes)},
+        {CKA_SENSITIVE,			&yes,			sizeof(yes)},
+        {CKA_EXTRACTABLE,		&yes,			sizeof(yes)},
+        {CKA_MODIFIABLE,		&yes,			sizeof(yes)},
+        {CKA_ENCRYPT,			&yes,			sizeof(yes)},
+        {CKA_DECRYPT,			&yes,			sizeof(yes)},
+        {CKA_LABEL,				&keyLabel,		sizeof(keyLabel)},
+		{CKA_VALUE_LEN,			&keyLen,		sizeof(keyLen)}
+    };
+
+    /**
+	 * 
+	*/
+    retVal = check_operation(funclistPtr->C_GenerateKey(hSession, &keyMech, keyAttrb, 
+														sizeof(keyAttrb) / sizeof(*keyAttrb), 
+														&objHandle), "C_GenerateKey()");
+
+    return retVal;
+}
+
 
 
 /**
