@@ -167,7 +167,7 @@ int gen_AES_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSess
     
 
     CK_ATTRIBUTE keyAttrb[] = {
-		{CKA_TOKEN,				&no,			sizeof(no)},
+		{CKA_TOKEN,				&yes,			sizeof(yes)},
         {CKA_PRIVATE,			&yes,			sizeof(yes)},
         {CKA_SENSITIVE,			&yes,			sizeof(yes)},
         {CKA_EXTRACTABLE,		&yes,			sizeof(yes)},

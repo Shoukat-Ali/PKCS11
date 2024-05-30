@@ -25,7 +25,8 @@
  * Using p11tool to see list of tokens, run the following command
  * 		p11tool --provider </full/path/to/libsofthsm2.so>  --list-tokens
  * 
- * Using p11tool to see the generated public/private key, run the following command
+ * Using p11tool to see the generated public/private key on token, run the following command.
+ * Note that session keys exist only during the session
  * 		p11tool --provider </full/path/to/libsofthsm2.so> --login --list-all <TOKEN-URL>
  * 		 
  * To delete public/private key, run the following command
