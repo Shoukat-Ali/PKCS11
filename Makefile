@@ -28,10 +28,17 @@ SRC_ECKEYPAIR = $(addprefix $(SRC_DIR),gen_EC_keypair.cpp)
 MAIN_ECKEYPAIR = $(addprefix $(MAIN_DIR),test_gen_EC_keypair.cpp)
 
 
-# Elliptic Curve (EC) keypair generation
+# Elliptic Curve Digital Signature Algorithm (ECDSA)
 HDR_ECDSA = $(addprefix $(HEADER_DIR),sign_verify_ECDSA.hpp)
 SRC_ECDSA = $(addprefix $(SRC_DIR),sign_verify_ECDSA.cpp)
 MAIN_ECDSA = $(addprefix $(MAIN_DIR),test_sign_verify_ECDSA.cpp)
+
+
+# Advanced Encryption Standard (AES) secret key generation
+HDR_AESKEYS = $(addprefix $(HEADER_DIR),gen_AES_keys.hpp)
+SRC_AESKEYS = $(addprefix $(SRC_DIR),gen_AES_keys.cpp)
+MAIN_AESKEYS = $(addprefix $(MAIN_DIR),test_gen_AES_keys.cpp)
+
 
 
 #Object files
@@ -39,6 +46,7 @@ OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o
 OBJS_STLIST = main_STList.o src_STList.o
 OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o
+OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o
 
 
 # Connect to and disconnect from a token
@@ -74,7 +82,7 @@ test_ECKeypair: $(OBJS_ECKEYPAIR)
 	$(CXX) $^ -o $@
 
 
-# EC keypair files
+# Elliptic Curve Digital Signature Algorithm (ECDSA) files
 main_ECDSA.o: $(MAIN_ECDSA)
 	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
 
@@ -82,6 +90,17 @@ src_ECDSA.o: $(SRC_ECDSA) $(HDR_ECDSA)
 	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
 
 test_ECDSA: $(OBJS_ECDSA)
+	$(CXX) $^ -o $@
+
+
+# Advanced Encryption Standard (AES) secret key generation
+main_AESKeys.o: $(MAIN_AESKEYS)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+src_AESKeys.o: $(SRC_AESKEYS) $(HDR_AESKEYS)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+test_AESKeys: $(OBJS_AESKEYS)
 	$(CXX) $^ -o $@
 
 
@@ -98,3 +117,6 @@ clean_test_ECKeypair:
 
 clean_test_ECDSA:
 	rm test_ECDSA $(OBJS_ECDSA)
+
+clean_test_AESKeys:
+	rm test_AESKeys $(OBJS_AESKEYS)
