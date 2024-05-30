@@ -31,6 +31,9 @@
  * 		 
  * To delete public/private key, run the following command
  * 		p11tool --provider </full/path/to/libsofthsm2.so> --delete <TOKEN-URL>
+ * 
+ * One can directly delete the persistant keys (token object) in the tokens sub-directory 
+ * where softhsm2 library is installed on one's system
 */
 
 
