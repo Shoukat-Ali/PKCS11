@@ -240,14 +240,6 @@ int sign_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESSIO
 	}
 
 	/**
-	 * The CKM_ECDSA denotes ECDSA without hashing mechanism.
-	 * It is a mechanism for single-part signatures and verification for ECDSA
-	 * This mechanism does not have a parameter
-	 * 
-	 * */
-	// CK_MECHANISM signMech = {CKM_ECDSA};
-
-	/**
 	 * CK_RV C_SignInit(CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism, CK_OBJECT_HANDLE hKey);
 	 * 
 	 * C_SignInit() initializes a signature operation, where the signature is an appendix to the data. 
@@ -308,7 +300,6 @@ int verify_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESS
 							CK_BYTE_PTR sigPtr, CK_ULONG sigLen)
 {
 	int retVal = 0;
-	// CK_MECHANISM mech = {CKM_ECDSA};
 	
 	// Checking whether funclistPtr is null or not 
 	if (is_nullptr(funclistPtr)) {
