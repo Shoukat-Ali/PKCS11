@@ -1,6 +1,6 @@
 /**
  * This program is an attempt to generate Advanced Encryption Standard (AES) keys of sizes;
- * (a) 128-bit (16-byte), (b) 194-bit (24-byte), and (c) 256-bit (32-byte). 
+ * (a) 128-bit (16-byte), (b) 192-bit (24-byte), and (c) 256-bit (32-byte). 
  * The following operations will be performed
  * 
  * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
@@ -10,7 +10,7 @@
  *          ii.     C_OpenSession() 
  *          iii.    C_Login()
  * 		3. Generate AES key (symmetric key) by invoking
- *          i.      C_() 
+ *          i.      C_GenerateKey() 
  * 		4. Disconnect from a connect slot using the followings
  *          i.      C_Logout() 
  *          ii.     C_CloseSession() 
@@ -32,8 +32,9 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN);
 
-int gen_AES_128_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
-					CK_OBJECT_HANDLE_PTR keyhandPtr);
+int gen_AES_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+				CK_OBJECT_HANDLE_PTR hkeyPtr, CK_ULONG& keyLen,
+                const CK_UTF8CHAR_PTR keyLabel, const size_t klLen);
 
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession);
 

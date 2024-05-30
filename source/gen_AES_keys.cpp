@@ -152,20 +152,19 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int gen_AES_128_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
-					CK_OBJECT_HANDLE_PTR keyhandPtr)
+int gen_AES_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+				CK_OBJECT_HANDLE_PTR hkeyPtr, CK_ULONG& keyLen,
+				const CK_UTF8CHAR_PTR keyLabel, const size_t klLen)
 {
 	int retVal = 0;
+	CK_BBOOL yes = CK_TRUE;
+    CK_BBOOL no = CK_FALSE;
 
 	// Checking whether funclistPtr is null or not 
 	if (is_nullptr(funclistPtr)) {
 		return 4;
 	}
-
-    CK_BBOOL yes = CK_TRUE;
-    CK_BBOOL no = CK_FALSE;
-    CK_UTF8CHAR keyLabel[] = "AES 128-bit key";
-    CK_ULONG keyLen = 16;		// 128-bit is equal to 16-byte
+    
 
     CK_ATTRIBUTE keyAttrb[] = {
 		{CKA_TOKEN,				&no,			sizeof(no)},
@@ -175,7 +174,7 @@ int gen_AES_128_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
         {CKA_MODIFIABLE,		&no,			sizeof(no)},
         {CKA_ENCRYPT,			&yes,			sizeof(yes)},
         {CKA_DECRYPT,			&yes,			sizeof(yes)},
-        {CKA_LABEL,				&keyLabel,		sizeof(keyLabel)},
+        {CKA_LABEL,				keyLabel,		klLen},
 		{CKA_VALUE_LEN,			&keyLen,		sizeof(keyLen)}
     };
 
@@ -200,7 +199,7 @@ int gen_AES_128_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
 	*/
     retVal = check_operation(funclistPtr->C_GenerateKey(hSession, &keyMech, keyAttrb, 
 														sizeof(keyAttrb) / sizeof(*keyAttrb), 
-														keyhandPtr), "C_GenerateKey()");
+														hkeyPtr), "C_GenerateKey()");
 
     return retVal;
 }
