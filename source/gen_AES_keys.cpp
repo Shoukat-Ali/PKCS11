@@ -144,7 +144,7 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 }
 
 /**
- * The function generates AES 128-bit secret key
+ * The function generates AES secret key based on given parameters
  * 
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
