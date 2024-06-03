@@ -54,7 +54,8 @@ CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
 */
 int encrypt_data(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                 const CK_OBJECT_HANDLE& hSecretkey,
-                CK_CHAR_PTR ptPtr, CK_BYTE_PTR ctPtr)
+                CK_CHAR_PTR ptPtr, const size_t ptLen, 
+                CK_BYTE_PTR ctPtr, size_t ctLen)
 {
     int retVal = 0;
 
@@ -83,6 +84,24 @@ int encrypt_data(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 	retVal = check_operation(funclistPtr->C_EncryptInit(hSession, &encMech, hSecretkey), "C_EncryptInit()");
     if (!retVal) {
         // The encryption operation successfully initialized
+        /**
+         * CK_RV C_EncryptUpdate(CK_SESSION_HANDLE hSession,
+         *                          CK_BYTE_PTR pPart,
+         *                          CK_ULONG ulPartLen,
+         *                          CK_BYTE_PTR pEncryptedPart,
+         *                          CK_ULONG_PTR pulEncryptedPartLen);
+         * 
+         * C_EncryptUpdate() continues a multiple-part encryption operation, processing another
+         * data part. 
+         * 
+         * hSession is the session’s handle; 
+         * pPart points to the data part; 
+         * ulPartLen is the length of the data part; 
+         * pEncryptedPart points to the location that receives the encrypted data part; 
+         * pulEncryptedPartLen points to the location that holds the length in bytes of the encrypted data part.
+         * 
+        */
+       retVal = check_operation(funclistPtr->C_EncryptUpdate(hSession, ptPtr, ptLen, ctPtr, &ctLen), "C_EncryptUpdate()");
 
     }
 	return retVal;
