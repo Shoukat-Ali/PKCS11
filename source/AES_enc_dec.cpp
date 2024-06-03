@@ -101,7 +101,24 @@ int encrypt_data(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
          * pulEncryptedPartLen points to the location that holds the length in bytes of the encrypted data part.
          * 
         */
-       retVal = check_operation(funclistPtr->C_EncryptUpdate(hSession, ptPtr, ptLen, ctPtr, &ctLen), "C_EncryptUpdate()");
+    //    retVal = check_operation(funclistPtr->C_EncryptUpdate(hSession, ptPtr, ptLen, ctPtr, &ctLen), "C_EncryptUpdate()");
+       
+       /**
+        * CK_RV C_Encrypt(CK_SESSION_HANDLE hSession,
+        *                   CK_BYTE_PTR pData,
+        *                   CK_ULONG ulDataLen,
+        *                   CK_BYTE_PTR pEncryptedData,
+        *                   CK_ULONG_PTR pulEncryptedDataLen);
+        * 
+        * C_Encrypt() encrypts single-part data. 
+        * 
+        * hSession is the session’s handle; 
+        * pData points to the data; 
+        * ulDataLen is the length in bytes of the data; 
+        * pEncryptedData points to the location that receives the encrypted data; 
+        * pulEncryptedDataLen points to the location that holds the length in bytes of the encrypted data.
+       */
+      retVal = check_operation(funclistPtr->C_Encrypt(hSession, ptPtr, ptLen, ctPtr, &ctLen), "C_Encrypt()");
 
     }
 	return retVal;
