@@ -8,6 +8,11 @@ using std::cin;
 using std::endl;
 
 
+
+// For now, to set IV length
+#define BYTE_LEN 16
+
+
 /**
  * An initialization vector (IV) is used by several modes to randomize the encryption 
  * such that if the same plaintext is encrypted multiple times, then distinct ciphertexts
@@ -16,7 +21,7 @@ using std::endl;
  * 
  * TODO: generate random IV  
 */
-CK_BYTE IV[] = {"UTf34-ijhy;it1MM"};
+CK_BYTE IV[BYTE_LEN] = {"UTf34-ijhy;it1M"};
 
 
 /**
@@ -47,15 +52,19 @@ CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
  * Cipher block chaining (CBC) mode i.e., CKM_AES_CBC_PAD
  * 
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * hSecretkey is an alias of secret key handle
  * ptPtr is a pointer to array of unsinged 8-bit character representing plaintext
+ * ptLen represents the byte-length of plaintext
  * ctPtr is a pointer to array of unsinged 8-bit character representing ciphertext
+ * ctLen represents the byte-length of ciphertext
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
-int encrypt_data(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
-                const CK_OBJECT_HANDLE& hSecretkey,
-                CK_CHAR_PTR ptPtr, const size_t ptLen, 
-                CK_BYTE_PTR ctPtr, size_t ctLen)
+int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+                        const CK_OBJECT_HANDLE& hSecretkey,
+                        CK_CHAR_PTR ptPtr, const size_t ptLen, 
+                        CK_BYTE_PTR ctPtr, size_t ctLen)
 {
     int retVal = 0;
 
@@ -124,3 +133,19 @@ int encrypt_data(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 	return retVal;
 }
 
+
+/**
+ * The function decrypts given ciphertext using Advanced Encryption Standard (AES) with 
+ * Cipher block chaining (CBC) mode i.e., CKM_AES_CBC_PAD
+ * 
+*/
+int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+                        const CK_OBJECT_HANDLE& hSecretkey,
+                        CK_CHAR_PTR ctPtr, const size_t ctLen, 
+                        CK_BYTE_PTR ptPtr, size_t ptLen)
+{
+	int retVal = 0;
+	retVal = check_operation(funclistPtr->C_DecryptInit(hSession, &encMech, hSecretkey), "C_DecryptInit()");
+	retVal = check_operation(funclistPtr->C_Decrypt(hSession, ctPtr, ctLen, ptPtr, &ptLen), "C_Decrypt");
+	return retVal;
+}
