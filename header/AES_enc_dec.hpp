@@ -17,7 +17,6 @@
 #ifndef AES_ENC_DEC_HPP
 #define AES_ENC_DEC_HPP
 
-#include <string>
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 
 int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,

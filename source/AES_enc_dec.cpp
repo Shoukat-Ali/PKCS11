@@ -21,7 +21,7 @@ using std::endl;
  * 
  * TODO: generate random IV  
 */
-CK_BYTE IV[BYTE_LEN] = {"UTf34-ijhy;it1M"};
+CK_BYTE IV[BYTE_LEN] = "UTf34-ijhy;it1M";
 
 
 /**
@@ -68,8 +68,8 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 {
     int retVal = 0;
 
-    // Checking whether funclistPtr is null or not 
-	if (is_nullptr(funclistPtr) || is_nullptr(ptPtr)) {
+    // Checking given pointers is null or not 
+	if (is_nullptr(funclistPtr) || is_nullptr(ptPtr) || is_nullptr(ctPtr)) {
 		return 4;
 	}
 
@@ -154,6 +154,11 @@ int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE
                         CK_BYTE_PTR ptPtr, size_t ptLen)
 {
 	int retVal = 0;
+
+    // Checking given pointers is null or not 
+	if (is_nullptr(funclistPtr) || is_nullptr(ptPtr) || is_nullptr(ctPtr)) {
+		return 5;
+	}
     /**
      * CK_RV C_DecryptInit(CK_SESSION_HANDLE hSession,
      *                      CK_MECHANISM_PTR pMechanism,
