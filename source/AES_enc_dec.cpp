@@ -145,7 +145,42 @@ int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE
                         CK_BYTE_PTR ptPtr, size_t ptLen)
 {
 	int retVal = 0;
+    /**
+     * CK_RV C_DecryptInit(CK_SESSION_HANDLE hSession,
+     *                      CK_MECHANISM_PTR pMechanism,
+     *                      CK_OBJECT_HANDLE hKey);
+     * 
+     * C_DecryptInit() initializes a decryption operation. 
+     * 
+     * hSession is the session’s handle;
+     * pMechanism points to the decryption mechanism; 
+     * hKey is the handle of the decryption key.
+     * 
+     * After calling C_DecryptInit(), the application can either call C_Decrypt() to decrypt data
+     * in a single part; or call C_DecryptUpdate() zero or more times, followed by
+     * C_DecryptFinal(), to decrypt data in multiple parts.
+    */
 	retVal = check_operation(funclistPtr->C_DecryptInit(hSession, &encMech, hSecretkey), "C_DecryptInit()");
-	retVal = check_operation(funclistPtr->C_Decrypt(hSession, ctPtr, ctLen, ptPtr, &ptLen), "C_Decrypt");
+	if (!retVal) {
+        // Decryption operation successfully initialized
+        /**
+         * CK_RV C_Decrypt(CK_SESSION_HANDLE hSession,
+         *                  CK_BYTE_PTR pEncryptedData,
+         *                  CK_ULONG ulEncryptedDataLen,
+         *                  CK_BYTE_PTR pData,
+         *                  CK_ULONG_PTR pulDataLen);
+         * 
+         * C_Decrypt() decrypts encrypted data in a single part. 
+         * 
+         * hSession is the session’s handle;
+         * pEncryptedData points to the encrypted data; 
+         * ulEncryptedDataLen is the length of the encrypted data; 
+         * pData points to the location that receives the recovered data; 
+         * pulDataLen points to the location that holds the length of the recovered data.
+         * 
+         * 
+        */
+        retVal = check_operation(funclistPtr->C_Decrypt(hSession, ctPtr, ctLen, ptPtr, &ptLen), "C_Decrypt()");
+    }
 	return retVal;
 }
