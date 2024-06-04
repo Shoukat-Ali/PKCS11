@@ -54,9 +54,9 @@ CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
  * hSecretkey is an alias of secret key handle
- * ptPtr is a pointer to array of unsinged 8-bit character representing plaintext
+ * ptPtr is a pointer to array of unsinged 8-bit character representing plaintext (source)
  * ptLen represents the byte-length of plaintext
- * ctPtr is a pointer to array of unsinged 8-bit character representing ciphertext
+ * ctPtr is a pointer to array of unsinged 8-bit character representing ciphertext (destination)
  * ctLen represents the byte-length of ciphertext
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
@@ -138,6 +138,15 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
  * The function decrypts given ciphertext using Advanced Encryption Standard (AES) with 
  * Cipher block chaining (CBC) mode i.e., CKM_AES_CBC_PAD
  * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * hSecretkey is an alias of secret key handle
+ * ctPtr is a pointer to array of unsinged 8-bit character representing ciphertext (source)
+ * ctLen represents the byte-length of ciphertext
+ * ptPtr is a pointer to array of unsinged 8-bit character representing plaintext (destination)
+ * ptLen represents the byte-length of plaintext
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
 int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
