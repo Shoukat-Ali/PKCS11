@@ -36,22 +36,6 @@ int check_operation(const CK_RV rv, const char* message)
 
 
 
-/**
- * This function checks whether a given pointer is null of not.
- * 
- * ptr is a constant pointer to void type
- * 
- * If given pointer is null, then return true. Otherwise, faluse is returned.
- * 
-*/
-inline bool is_nullptr(void * const ptr)
-{
-	if (ptr) {
-		return false;
-	}
-	cout << "Error, pointer is NULL\n";
-	return true;
-}
 
 
 
