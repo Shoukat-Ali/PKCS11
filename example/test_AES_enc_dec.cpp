@@ -130,14 +130,14 @@ int main()
                 retVal = encrypt_plaintext(funclistPtr, hSession, keyHandle,
                                             plaintext, ciphertext);
                 if (!retVal) {
-                    cout << "Data successfully encrypted\n";
+                    cout << "\tData successfully encrypted\n";
                     // Decrypt ciphertext
                     retVal = decrypt_ciphertext(funclistPtr, hSession, keyHandle,
                                                 ciphertext, dectext);
                                                 
                     // Comparing plaintext to decrypted text
                     if (!plaintext.compare(dectext)) {
-                        cout << "Plaintext matches decrypted text!!!\n";
+                        cout << "\tAfter decryption, plaintext matches decrypted text!!!\n";
                     }
                 }
             }

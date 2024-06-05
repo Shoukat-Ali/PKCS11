@@ -39,6 +39,10 @@ HDR_AESKEYS = $(addprefix $(HEADER_DIR),gen_AES_keys.hpp)
 SRC_AESKEYS = $(addprefix $(SRC_DIR),gen_AES_keys.cpp)
 MAIN_AESKEYS = $(addprefix $(MAIN_DIR),test_gen_AES_keys.cpp)
 
+# Advanced Encryption Standard (AES) encryption and decryption operation
+HDR_AESENCDEC = $(addprefix $(HEADER_DIR),AES_enc_dec.hpp)
+SRC_AESENCDEC = $(addprefix $(SRC_DIR),AES_enc_dec.cpp)
+MAIN_AESENCDEC = $(addprefix $(MAIN_DIR),test_AES_enc_dec.cpp)
 
 
 #Object files
@@ -47,6 +51,8 @@ OBJS_STLIST = main_STList.o src_STList.o
 OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o
+OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o src_AESKeys.o
+
 
 
 # Connect to and disconnect from a token
@@ -104,6 +110,17 @@ test_AESKeys: $(OBJS_AESKEYS)
 	$(CXX) $^ -o $@
 
 
+# Advanced Encryption Standard (AES) encryption and decryption operation
+main_AESEncDec.o: $(MAIN_AESENCDEC)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+src_AESEncDec.o: $(SRC_AESENCDEC) $(HDR_AESENCDEC)
+	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+
+test_AESEncDec: $(OBJS_AESENCDEC)
+	$(CXX) $^ -o $@
+
+
 
 .PHONY : clean
 clean_test_ConnDis:
@@ -120,3 +137,6 @@ clean_test_ECDSA:
 
 clean_test_AESKeys:
 	rm test_AESKeys $(OBJS_AESKEYS)
+
+clean_test_AESEncDec:
+	rm test_AESEncDec $(OBJS_AESENCDEC)
