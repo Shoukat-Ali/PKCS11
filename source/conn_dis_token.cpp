@@ -31,7 +31,7 @@ int check_operation(const CK_RV rv, const char* message)
 
 
 /**
- * This function checks whether a given pointer is null of not.
+ * This function checks whether a given pointer is null or not.
  * 
  * ptr is a constant pointer to void type
  * 

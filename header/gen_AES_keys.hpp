@@ -42,7 +42,7 @@ void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::str
 
 
 /**
- * This function checks whether a given pointer is null of not.
+ * This function checks whether a given pointer is null or not.
  * 
  * ptr is a constant pointer to void type
  * 
