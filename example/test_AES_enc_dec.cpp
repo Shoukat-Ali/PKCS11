@@ -45,7 +45,7 @@
 #include "../header/AES_enc_dec.hpp"
 
 // AES uses 128-bit (16-byte) block
-#define AES_BLOCK_BYTE_LEN 16
+// #define AES_BLOCK_BYTE_LEN 16
 
 
 using std::cout;
