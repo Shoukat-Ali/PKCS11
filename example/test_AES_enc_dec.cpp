@@ -44,6 +44,9 @@
 #include "../header/gen_AES_keys.hpp"
 #include "../header/AES_enc_dec.hpp"
 
+// AES uses 128-bit (16-byte) block
+#define AES_BLOCK_BYTE_LEN 16
+
 
 using std::cout;
 using std::endl;
@@ -61,12 +64,11 @@ int main()
 	CK_SESSION_HANDLE hSession = 0; 
 	std::string usrPIN;
     CK_ULONG keyLen = 0;
-    // CK_UTF8CHAR Label[] = "AES xxx-bit key";
+    
     CK_CHAR Label[] = "AES xxx-bit key";
-    CK_CHAR plaintext[] = "This is to test our AES encryption scheme implementation\
-     and we are adding some texts on line #2";
-    CK_CHAR ciphertext[sizeof(plaintext)];
-    CK_CHAR dectext[sizeof(ciphertext)];
+    std::string plaintext("This is to test our AES encryption scheme implementation and we are adding some texts on line #2");
+    std::string ciphertext;
+    std::string dectext;
 
     /**
      * typedef CK_ULONG CK_OBJECT_HANDLE;
@@ -126,22 +128,16 @@ int main()
                 cout << "\t"<< Label << " successfully generated\n";
                 // Encrypt plaintext
                 retVal = encrypt_plaintext(funclistPtr, hSession, keyHandle,
-                                            plaintext, sizeof(plaintext) - 1,
-                                            ciphertext, sizeof(ciphertext) - 1);
+                                            plaintext, ciphertext);
                 if (!retVal) {
+                    cout << "Data successfully encrypted\n";
                     // Decrypt ciphertext
                     retVal = decrypt_ciphertext(funclistPtr, hSession, keyHandle,
-                                                ciphertext, sizeof(ciphertext),
-                                                dectext, sizeof(dectext));
+                                                ciphertext, dectext);
                                                 
                     // Comparing plaintext to decrypted text
-                    if (sizeof(plaintext) == sizeof(dectext)) {
-                        for (size_t i = 0; i < sizeof(dectext); ++i) {
-                            // Comparing each characters
-                            if (plaintext[i] != dectext[i]) {
-                                cout << "Plaintext does not match decrypted text at index :: " << i << endl;
-                            }
-                        }
+                    if (!plaintext.compare(dectext)) {
+                        cout << "Plaintext matches decrypted text!!!\n";
                     }
                 }
             }

@@ -17,17 +17,19 @@
 #ifndef AES_ENC_DEC_HPP
 #define AES_ENC_DEC_HPP
 
+#include <string>
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
+
+
+using std::string;
 
 int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        CK_CHAR_PTR ptPtr, const size_t ptLen, 
-                        CK_BYTE_PTR ctPtr, size_t ctLen);
+                        const string& plaintext, string& ciphertext);
 
 
 int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        CK_CHAR_PTR ctPtr, const size_t ctLen, 
-                        CK_BYTE_PTR ptPtr, size_t ptLen);
+                        const string& ciphertext, string& decryptext);
 
 #endif

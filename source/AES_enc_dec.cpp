@@ -1,16 +1,16 @@
 #include <iostream>
-#include <limits>
+#include <iterator>
 #include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
 #include "../header/gen_AES_keys.hpp" 
 
 using std::cout; 
 using std::cin;
 using std::endl;
-
+using std::string;
 
 
 // For now, to set IV length
-#define BYTE_LEN 16
+// #define BYTE_LEN 16
 
 
 /**
@@ -21,7 +21,7 @@ using std::endl;
  * 
  * TODO: generate random IV  
 */
-CK_BYTE IV[BYTE_LEN] = "UTf34-ijhy;it1M";
+CK_BYTE IV[] = "UTf34-ijhy;it1MB";
 
 
 /**
@@ -63,13 +63,14 @@ CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
 */
 int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        CK_CHAR_PTR ptPtr, const size_t ptLen, 
-                        CK_BYTE_PTR ctPtr, size_t ctLen)
+                        const string& plaintext, string& ciphertext)
 {
     int retVal = 0;
+    CK_BYTE_PTR ctPtr = NULL_PTR;
+    size_t ctLen = 0;
 
     // Checking given pointers is null or not 
-	if (is_nullptr(funclistPtr) || is_nullptr(ptPtr) || is_nullptr(ctPtr)) {
+	if (is_nullptr(funclistPtr)) {
 		return 4;
 	}
 
@@ -127,9 +128,22 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
         * pEncryptedData points to the location that receives the encrypted data; 
         * pulEncryptedDataLen points to the location that holds the length in bytes of the encrypted data.
        */
-      retVal = check_operation(funclistPtr->C_Encrypt(hSession, ptPtr, ptLen, ctPtr, &ctLen), "C_Encrypt()");
+      
+    //   cout << "Plaintext byte-length :: " << plaintext.length() << endl
+    //         << "Ciphertext byte-length :: " << ciphertext.length() << endl;
 
+      retVal = check_operation(funclistPtr->C_Encrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(plaintext.c_str())), 
+                                                        plaintext.length(), NULL_PTR, &ctLen), "C_Encrypt()");
+    //   cout << "Required ciphertext byte-length :: " << ctLen << endl;
+      ctPtr = new CK_BYTE[ctLen]; // Memory allocated
+
+      retVal = check_operation(funclistPtr->C_Encrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(plaintext.c_str())), 
+                                                        plaintext.length(), ctPtr, &ctLen), "C_Encrypt()");
+      ciphertext.assign(ctPtr, ctPtr + ctLen);
+
+      delete[] ctPtr;   // Memory de-allocated
     }
+
 	return retVal;
 }
 
@@ -150,13 +164,14 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 */
 int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        CK_CHAR_PTR ctPtr, const size_t ctLen, 
-                        CK_BYTE_PTR ptPtr, size_t ptLen)
+                        const string& ciphertext, string& decryptext)
 {
 	int retVal = 0;
+    CK_BYTE_PTR dtPtr = NULL_PTR;
+    size_t dtLen = 0;
 
     // Checking given pointers is null or not 
-	if (is_nullptr(funclistPtr) || is_nullptr(ptPtr) || is_nullptr(ctPtr)) {
+	if (is_nullptr(funclistPtr)) {
 		return 5;
 	}
     /**
@@ -194,7 +209,20 @@ int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE
          * 
          * 
         */
-        retVal = check_operation(funclistPtr->C_Decrypt(hSession, ctPtr, ctLen, ptPtr, &ptLen), "C_Decrypt()");
+        // cout << "Ciphertext byte-length :: " << ciphertext.length() << endl
+        //      << "Decryptedtext byte-length :: " << decryptext.length() << endl;
+
+        retVal = check_operation(funclistPtr->C_Decrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(ciphertext.c_str())), 
+                                                        ciphertext.length(), NULL_PTR, &dtLen), "C_Decrypt()");
+                                                        
+        // cout << "Required decryptedtext byte-length :: " << dtLen << endl;
+        dtPtr = new CK_BYTE[dtLen]; // Memory allocated
+        
+        retVal = check_operation(funclistPtr->C_Decrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(ciphertext.c_str())), 
+                                                        ciphertext.length(), dtPtr, &dtLen), "C_Decrypt()");
+                                                        
+        decryptext.assign(dtPtr, dtPtr + dtLen);
+        delete[] dtPtr;   // Memory de-allocated
     }
 	return retVal;
 }
