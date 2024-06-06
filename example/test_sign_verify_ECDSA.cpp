@@ -146,12 +146,12 @@ int main()
                     // Signature was successfully generated
                     cout << "\tProduced signature (hex) :: ";
                     print_hex(sigPtr, sigLen);
-                    // For testing only changing one byte of signature
+                    // For testing, changing one byte of signature only
                     // sigPtr[0] ^= 0xFF;
                     retVal = verify_data_no_hashing(funclistPtr, hSession, hPublic, data,
                                                     dataLen, sigPtr, sigLen);
                     if (!retVal) {
-                        cout << "\tSignature correctly verified!\n";
+                        cout << "\tSignature correctly verified!!!\n";
                     }
                 }
             }
@@ -160,9 +160,10 @@ int main()
 			}
 		}
 	}
-	free_resource(libHandle, funclistPtr, usrPIN);
+	free_resource(libHandle, funclistPtr);
     dataLen = 0;
     sigLen = 0;
+	usrPIN.clear();
     delete[] sigPtr;
     paraLen = 0;
     delete[] ecparaPtr;

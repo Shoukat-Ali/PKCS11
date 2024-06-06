@@ -142,14 +142,18 @@ int main()
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		if (!(retVal = connect_slot(funclistPtr, hSession, usrPIN))) {
 			cout << "Connected to token successfully\n";
-			retVal = gen_EC_keypair(funclistPtr, hSession, ecparaPtr, byteLen,
-									&hPublic, &hPrivate);
+			if(!(retVal = gen_EC_keypair(funclistPtr, hSession, ecparaPtr, byteLen,
+									&hPublic, &hPrivate))) {
+				cout << "\tElliptic Curve (EC) keypair successfully generated\n";
+			}
+
 			if (!(retVal = disconnect_slot(funclistPtr, hSession))) {
 				cout << "Disconnected from token successfully\n";
 			}
 		}
 	}
-	free_resource(libHandle, funclistPtr, usrPIN);
+	free_resource(libHandle, funclistPtr);
+	usrPIN.clear();
 	byteLen = 0;
     delete[] ecparaPtr;
 	

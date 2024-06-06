@@ -46,6 +46,6 @@ int verify_data_no_hashing(const CK_FUNCTION_LIST_PTR funclistPtr, const CK_SESS
 							const CK_OBJECT_HANDLE& hPub, CK_BYTE_PTR dataPtr, const CK_ULONG dataLen,
 							CK_BYTE_PTR sigPtr, CK_ULONG sigLen);
 
-void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN);
+void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 #endif

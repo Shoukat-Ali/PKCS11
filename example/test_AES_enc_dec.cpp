@@ -146,7 +146,8 @@ int main()
 			}
 		}
 	}
-	free_resource(libHandle, funclistPtr, usrPIN);
+	free_resource(libHandle, funclistPtr);
+    usrPIN.clear();
     plaintext.clear();
     ciphertext.clear();
     dectext.clear();

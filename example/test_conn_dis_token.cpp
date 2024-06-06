@@ -64,7 +64,9 @@ int main()
 			}
 		}
 	}
-	free_resource(libHandle, funclistPtr, usrPIN);
+	free_resource(libHandle, funclistPtr);
+	// Removes all characters from the usrPIN string and all pointers, references, and iterators are invalidated. 
+    usrPIN.clear();
 	
 	return retVal;
 }

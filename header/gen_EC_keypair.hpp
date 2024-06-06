@@ -35,6 +35,6 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 					CK_BYTE_PTR const ecPara, const size_t ecParaSZ,
 					CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr);
 
-void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN);
+void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 #endif

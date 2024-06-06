@@ -37,7 +37,7 @@ int gen_AES_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSess
 
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession);
 
-void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN);
+void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 
 /**

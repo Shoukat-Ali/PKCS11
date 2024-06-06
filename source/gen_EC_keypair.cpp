@@ -180,15 +180,13 @@ int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
  * 
  * The function does not return anything 
 */
-void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr, std::string& usrPIN)
+void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
 	cout << "Clean up and free the resources\n";
 	if (dlclose(libHandle)) {
 		cout << "Error, dlclose() on softHSM library reference count\n";
 	}
     funclistPtr = NULL_PTR;
-    // Removes all characters from the usrPIN string and all pointers, references, and iterators are invalidated. 
-    usrPIN.clear();
 }
 
 
@@ -314,8 +312,5 @@ int gen_EC_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hS
 											attribPrv, sizeof(attribPrv) / sizeof(*attribPrv),
 											hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
 
-    if (!retVal) {
-		cout << "Elliptic Curve (EC) keypair successfully generated\n";
-	}
 	return retVal;    
 }

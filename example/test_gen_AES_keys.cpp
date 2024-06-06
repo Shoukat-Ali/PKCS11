@@ -123,8 +123,9 @@ int main()
 			}
 		}
 	}
-	free_resource(libHandle, funclistPtr, usrPIN);
+	free_resource(libHandle, funclistPtr);
     keyLen = 0;
+	usrPIN.clear();
     
 	return retVal;
 }
