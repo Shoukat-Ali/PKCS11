@@ -6,6 +6,7 @@
 using std::cout; 
 using std::cin;
 using std::endl;
+using std::string;
 
 /**
  * This mechanism does not have a parameter
@@ -138,7 +139,7 @@ int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSes
 */
 int gen_AES_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
 				CK_OBJECT_HANDLE_PTR hkeyPtr, CK_ULONG& keyLen,
-				const CK_UTF8CHAR_PTR keyLabel, const size_t klLen)
+				const string& keyLabel)
 {
 	int retVal = 0;
 	CK_BBOOL yes = CK_TRUE;
@@ -151,15 +152,15 @@ int gen_AES_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSess
     
 
     CK_ATTRIBUTE keyAttrb[] = {
-		{CKA_TOKEN,				&yes,			sizeof(yes)},
-        {CKA_PRIVATE,			&yes,			sizeof(yes)},
-        {CKA_SENSITIVE,			&yes,			sizeof(yes)},
-        {CKA_EXTRACTABLE,		&yes,			sizeof(yes)},
-        {CKA_MODIFIABLE,		&no,			sizeof(no)},
-        {CKA_ENCRYPT,			&yes,			sizeof(yes)},
-        {CKA_DECRYPT,			&yes,			sizeof(yes)},
-        {CKA_LABEL,				keyLabel,		klLen},
-		{CKA_VALUE_LEN,			&keyLen,		sizeof(keyLen)}
+		{CKA_TOKEN,				&yes,									sizeof(yes)},
+        {CKA_PRIVATE,			&yes,									sizeof(yes)},
+        {CKA_SENSITIVE,			&yes,									sizeof(yes)},
+        {CKA_EXTRACTABLE,		&yes,									sizeof(yes)},
+        {CKA_MODIFIABLE,		&no,									sizeof(no)},
+        {CKA_ENCRYPT,			&yes,									sizeof(yes)},
+        {CKA_DECRYPT,			&yes,									sizeof(yes)},
+        {CKA_LABEL,				const_cast<char*>(keyLabel.c_str()),	keyLabel.length()},
+		{CKA_VALUE_LEN,			&keyLen,								sizeof(keyLen)}
     };
 
     /**

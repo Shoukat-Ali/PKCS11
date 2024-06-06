@@ -65,7 +65,7 @@ int main()
 	std::string usrPIN;
     CK_ULONG keyLen = 0;
     
-    CK_CHAR Label[] = "AES xxx-bit key";
+    std::string label("AES xxx-bit key");
     std::string plaintext("This is to test our AES encryption scheme implementation and we are adding some texts on line #2");
     std::string ciphertext;
     std::string dectext;
@@ -96,21 +96,21 @@ int main()
 	switch (choice) {
 	case 1:
 		keyLen = 16;        // byte-length
-        Label[4] = '1';
-        Label[5] = '2';
-        Label[6] = '8';
+        label[4] = '1';
+        label[5] = '2';
+        label[6] = '8';
 		break;
 	case 2:
 		keyLen = 24;        // byte-length
-        Label[4] = '1';
-        Label[5] = '9';
-        Label[6] = '2';
+        label[4] = '1';
+        label[5] = '9';
+        label[6] = '2';
 		break;
 	case 3:
 		keyLen = 32;        // byte-length
-        Label[4] = '2';
-        Label[5] = '5';
-        Label[6] = '6';
+        label[4] = '2';
+        label[5] = '5';
+        label[6] = '6';
 		break;
 	default:
 		cout << "Sorry, incorrect choice\n";
@@ -122,10 +122,10 @@ int main()
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		if (!(retVal = connect_slot(funclistPtr, hSession, usrPIN))) {
 			cout << "Connected to token successfully\n";
-			retVal = gen_AES_key(funclistPtr, hSession, &keyHandle, keyLen, Label, sizeof(Label));
+			retVal = gen_AES_key(funclistPtr, hSession, &keyHandle, keyLen, label);
             if (!retVal) {
                 // AES secret key successfully generated
-                cout << "\t"<< Label << " successfully generated\n";
+                cout << "\t"<< label << " successfully generated\n";
                 // Encrypt plaintext
                 retVal = encrypt_plaintext(funclistPtr, hSession, keyHandle,
                                             plaintext, ciphertext);
@@ -147,6 +147,10 @@ int main()
 		}
 	}
 	free_resource(libHandle, funclistPtr, usrPIN);
+    plaintext.clear();
+    ciphertext.clear();
+    dectext.clear();
+    label.clear();
     keyLen = 0;
     
 	return retVal;

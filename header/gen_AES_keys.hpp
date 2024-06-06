@@ -33,8 +33,7 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 int connect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession, std::string& usrPIN);
 
 int gen_AES_key(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
-				CK_OBJECT_HANDLE_PTR hkeyPtr, CK_ULONG& keyLen,
-                const CK_UTF8CHAR_PTR keyLabel, const size_t klLen);
+				CK_OBJECT_HANDLE_PTR hkeyPtr, CK_ULONG& keyLen, const std::string& keyLabel);
 
 int disconnect_slot(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession);
 
