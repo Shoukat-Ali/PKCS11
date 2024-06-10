@@ -5,7 +5,12 @@ INCLUDE_DIR = ./include/
 
 
 CXX = g++
-CXXFLAGS = -Wall -Werror -c -g3 -O3 -I$(INCLUDE_DIR)
+BSCFLAGS = -Wall -Werror -c -I$(INCLUDE_DIR)
+GDBFLAG = -g3
+OPTZFLAG = -O3
+BOUNDPROT = -fstack-protector
+MEMERROR = -fsanitize=address
+PIEXE = -fPIE
 CXX11 = -std=c++11
 CXX17 = -std=c++17
 
@@ -57,10 +62,10 @@ OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o src_AESKeys.o
 
 # Connect to and disconnect from a token
 main_ConnDis.o: $(MAIN_CONNDIS)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 src_ConnDis.o: $(SRC_CONNDIS) $(HDR_CONNDIS)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 test_ConnDis: $(OBJS_CONNDIS)
 	$(CXX) $^ -o $@
@@ -68,10 +73,10 @@ test_ConnDis: $(OBJS_CONNDIS)
 
 # Slot and Token information files
 main_STList.o: $(MAIN_STLIST)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 src_STList.o: $(SRC_STLIST) $(HDR_STLIST)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 test_STList: $(OBJS_STLIST)
 	$(CXX) $^ -o $@
@@ -79,10 +84,10 @@ test_STList: $(OBJS_STLIST)
 
 # EC keypair files
 main_ECKeypair.o: $(MAIN_ECKEYPAIR)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 src_ECKeypair.o: $(SRC_ECKEYPAIR) $(HDR_ECKEYPAIR)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 test_ECKeypair: $(OBJS_ECKEYPAIR)
 	$(CXX) $^ -o $@
@@ -90,10 +95,10 @@ test_ECKeypair: $(OBJS_ECKEYPAIR)
 
 # Elliptic Curve Digital Signature Algorithm (ECDSA) files
 main_ECDSA.o: $(MAIN_ECDSA)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 src_ECDSA.o: $(SRC_ECDSA) $(HDR_ECDSA)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 test_ECDSA: $(OBJS_ECDSA)
 	$(CXX) $^ -o $@
@@ -101,10 +106,10 @@ test_ECDSA: $(OBJS_ECDSA)
 
 # Advanced Encryption Standard (AES) secret key generation
 main_AESKeys.o: $(MAIN_AESKEYS)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 src_AESKeys.o: $(SRC_AESKEYS) $(HDR_AESKEYS)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 test_AESKeys: $(OBJS_AESKEYS)
 	$(CXX) $^ -o $@
@@ -112,10 +117,10 @@ test_AESKeys: $(OBJS_AESKEYS)
 
 # Advanced Encryption Standard (AES) encryption and decryption operation
 main_AESEncDec.o: $(MAIN_AESENCDEC)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 src_AESEncDec.o: $(SRC_AESENCDEC) $(HDR_AESENCDEC)
-	$(CXX) $(CXXFLAGS) $(CXX11) $< -o $@
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 test_AESEncDec: $(OBJS_AESENCDEC)
 	$(CXX) $^ -o $@
