@@ -58,9 +58,9 @@ MAIN_AESENCDEC = $(addprefix $(MAIN_DIR),test_AES_enc_dec.cpp)
 
 #Object files
 OBJS_BSCOPR = src_BscOpr.o
-OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o
-OBJS_STLIST = main_STList.o src_STList.o
-OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o
+OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o src_BscOpr.o
+OBJS_STLIST = main_STList.o src_STList.o src_BscOpr.o
+OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o src_ConnDis.o src_BscOpr.o
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o
 OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o
@@ -81,7 +81,7 @@ main_ConnDis.o: $(MAIN_CONNDIS)
 src_ConnDis.o: $(SRC_CONNDIS) $(HDR_CONNDIS)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
-test_ConnDis: $(OBJS_CONNDIS) $(OBJS_BSCOPR)
+test_ConnDis: $(OBJS_CONNDIS)
 	$(CXX) $^ -o $@
 
 
@@ -92,7 +92,7 @@ main_STList.o: $(MAIN_STLIST)
 src_STList.o: $(SRC_STLIST) $(HDR_STLIST)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
-test_STList: $(OBJS_STLIST) $(OBJS_BSCOPR)
+test_STList: $(OBJS_STLIST)
 	$(CXX) $^ -o $@
 
 
@@ -146,10 +146,10 @@ clean_basic_opr:
 	rm $(OBJS_BSCOPR)
 
 clean_test_ConnDis:
-	rm test_ConnDis $(OBJS_CONNDIS) $(OBJS_BSCOPR)
+	rm test_ConnDis $(OBJS_CONNDIS)
 
 clean_test_STList:
-	rm test_STList $(OBJS_STLIST) $(OBJS_BSCOPR)
+	rm test_STList $(OBJS_STLIST)
 
 clean_test_ECKeypair:
 	rm test_ECKeypair $(OBJS_ECKEYPAIR)

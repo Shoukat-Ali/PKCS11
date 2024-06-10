@@ -12,7 +12,7 @@
  *      make clean_test_ECKeypair
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_gen_EC_keypair.cpp ../source/gen_EC_keypair.cpp -o test_ECKeypair -I../include
+ *      g++ -Wall -Werror test_gen_EC_keypair.cpp ../source/gen_EC_keypair.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ECKeypair -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -39,6 +39,8 @@
 
 #include <iostream>
 #include <limits>
+#include "../header/basic_operation.hpp"
+#include "../header/conn_dis_token.hpp"
 #include "../header/gen_EC_keypair.hpp"
 
 
