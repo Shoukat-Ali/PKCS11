@@ -12,7 +12,7 @@
  *      make clean_test_ECDSA
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_sign_verify_ECDSA.cpp ../source/sign_verify_ECDSA.cpp -o test_ECDSA -I../include
+ *      g++ -Wall -Werror test_sign_verify_ECDSA.cpp ../source/sign_verify_ECDSA.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ECDSA -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -40,6 +40,8 @@
 
 #include <iostream>
 #include <limits>
+#include "../header/basic_operation.hpp"
+#include "../header/conn_dis_token.hpp"
 #include "../header/sign_verify_ECDSA.hpp"
 
 

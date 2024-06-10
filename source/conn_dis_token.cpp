@@ -1,6 +1,5 @@
 #include <iostream>
 #include <limits>
-#include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
 #include "../header/basic_operation.hpp"
 #include "../header/conn_dis_token.hpp"
  

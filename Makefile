@@ -61,7 +61,7 @@ OBJS_BSCOPR = src_BscOpr.o
 OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o src_BscOpr.o
 OBJS_STLIST = main_STList.o src_STList.o src_BscOpr.o
 OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o src_ConnDis.o src_BscOpr.o
-OBJS_ECDSA = main_ECDSA.o src_ECDSA.o
+OBJS_ECDSA = main_ECDSA.o src_ECDSA.o src_ConnDis.o src_BscOpr.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o
 OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o
 
