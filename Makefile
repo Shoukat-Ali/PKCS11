@@ -16,6 +16,11 @@ CXX17 = -std=c++17
 
 
 # Connect to and disconnect from a token
+HDR_BSCOPR = $(addprefix $(HEADER_DIR),basic_operation.hpp)
+SRC_BSCOPR = $(addprefix $(SRC_DIR),basic_operation.cpp)
+
+
+# Connect to and disconnect from a token
 HDR_CONNDIS = $(addprefix $(HEADER_DIR),conn_dis_token.hpp)
 SRC_CONNDIS = $(addprefix $(SRC_DIR),conn_dis_token.cpp)
 MAIN_CONNDIS = $(addprefix $(MAIN_DIR),test_conn_dis_token.cpp)
@@ -44,6 +49,7 @@ HDR_AESKEYS = $(addprefix $(HEADER_DIR),gen_AES_keys.hpp)
 SRC_AESKEYS = $(addprefix $(SRC_DIR),gen_AES_keys.cpp)
 MAIN_AESKEYS = $(addprefix $(MAIN_DIR),test_gen_AES_keys.cpp)
 
+
 # Advanced Encryption Standard (AES) encryption and decryption operation
 HDR_AESENCDEC = $(addprefix $(HEADER_DIR),AES_enc_dec.hpp)
 SRC_AESENCDEC = $(addprefix $(SRC_DIR),AES_enc_dec.cpp)
@@ -51,12 +57,20 @@ MAIN_AESENCDEC = $(addprefix $(MAIN_DIR),test_AES_enc_dec.cpp)
 
 
 #Object files
+OBJS_BSCOPR = src_BscOpr.o
 OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o
 OBJS_STLIST = main_STList.o src_STList.o
 OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o
-OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o src_AESKeys.o
+OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o
+
+
+
+# Basic common operations 
+src_BscOpr.o: $(SRC_BSCOPR) $(HDR_BSCOPR)
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
+
 
 
 
@@ -67,7 +81,7 @@ main_ConnDis.o: $(MAIN_CONNDIS)
 src_ConnDis.o: $(SRC_CONNDIS) $(HDR_CONNDIS)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
-test_ConnDis: $(OBJS_CONNDIS)
+test_ConnDis: $(OBJS_CONNDIS) $(OBJS_BSCOPR)
 	$(CXX) $^ -o $@
 
 
@@ -128,8 +142,11 @@ test_AESEncDec: $(OBJS_AESENCDEC)
 
 
 .PHONY : clean
+clean_basic_opr:
+	rm $(OBJS_BSCOPR)
+
 clean_test_ConnDis:
-	rm test_ConnDis $(OBJS_CONNDIS)
+	rm test_ConnDis $(OBJS_CONNDIS) $(OBJS_BSCOPR)
 
 clean_test_STList:
 	rm test_STList $(OBJS_STLIST)
@@ -145,3 +162,4 @@ clean_test_AESKeys:
 
 clean_test_AESEncDec:
 	rm test_AESEncDec $(OBJS_AESENCDEC)
+
