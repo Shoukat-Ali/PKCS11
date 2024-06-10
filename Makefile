@@ -92,7 +92,7 @@ main_STList.o: $(MAIN_STLIST)
 src_STList.o: $(SRC_STLIST) $(HDR_STLIST)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
-test_STList: $(OBJS_STLIST)
+test_STList: $(OBJS_STLIST) $(OBJS_BSCOPR)
 	$(CXX) $^ -o $@
 
 
@@ -149,7 +149,7 @@ clean_test_ConnDis:
 	rm test_ConnDis $(OBJS_CONNDIS) $(OBJS_BSCOPR)
 
 clean_test_STList:
-	rm test_STList $(OBJS_STLIST)
+	rm test_STList $(OBJS_STLIST) $(OBJS_BSCOPR)
 
 clean_test_ECKeypair:
 	rm test_ECKeypair $(OBJS_ECKEYPAIR)
