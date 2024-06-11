@@ -12,7 +12,7 @@
  *      make clean_test_AESKeys
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_gen_AES_keys.cpp ../source/gen_AES_keys.cpp -o test_AESKeys -I../include
+ *      g++ -Wall -Werror test_gen_AES_keys.cpp ../source/gen_AES_keys.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_AESKeys -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -40,6 +40,8 @@
 
 #include <iostream>
 #include <limits>
+#include "../header/basic_operation.hpp"
+#include "../header/conn_dis_token.hpp"
 #include "../header/gen_AES_keys.hpp"
 
 
