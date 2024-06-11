@@ -1,12 +1,9 @@
 #include <iostream>
 #include <limits>
 #include "../header/basic_operation.hpp"
-#include "../header/conn_dis_token.hpp"
 #include "../header/sign_verify_ECDSA.hpp" 
 
 using std::cout; 
-using std::cin;
-using std::endl;
 
 /**
  * The CKM_ECDSA denotes ECDSA without hashing mechanism.
