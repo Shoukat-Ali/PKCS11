@@ -21,15 +21,13 @@
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 
 
-using std::string;
-
 int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        const string& plaintext, string& ciphertext);
+                        const std::string& plaintext, std::string& ciphertext);
 
 
 int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        const string& ciphertext, string& decryptext);
+                        const std::string& ciphertext, std::string& decryptext);
 
 #endif

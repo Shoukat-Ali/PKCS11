@@ -1,12 +1,9 @@
 #include <iostream>
 #include <iterator>
-#include <dlfcn.h>		// Required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
+#include "../header/basic_operation.hpp"
 #include "../header/gen_AES_keys.hpp" 
 
 using std::cout; 
-using std::cin;
-using std::endl;
-using std::string;
 
 
 // For now, to set IV length
@@ -63,7 +60,7 @@ CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
 */
 int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        const string& plaintext, string& ciphertext)
+                        const std::string& plaintext, std::string& ciphertext)
 {
     int retVal = 0;
     CK_BYTE_PTR ctPtr = NULL_PTR;
@@ -164,7 +161,7 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 */
 int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
-                        const string& ciphertext, string& decryptext)
+                        const std::string& ciphertext, std::string& decryptext)
 {
 	int retVal = 0;
     CK_BYTE_PTR dtPtr = NULL_PTR;
