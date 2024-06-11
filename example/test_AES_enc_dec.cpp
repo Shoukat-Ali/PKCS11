@@ -4,11 +4,11 @@
  * 
  * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
  *      in order to use PKCS #11 functions
- *      2. Connect to valid slot using the followings
+ *      2. Connect to valid slot 
  * 		3. Generate AES key (symmetric key) by invoking
- *      4. Encrypt given plaintext/data using 
- *      5. Decrypt given ciphertext/data using
- *      6. Disconnect from a connect slot using the followings
+ *      4. Encrypt given plaintext/data  
+ *      5. Decrypt given ciphertext/data
+ *      6. Disconnect from a connect slot
  *      
  * 
  * To use the Makefile, make sure you're in the same directory of Makefile
