@@ -5,16 +5,9 @@
  * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
  *      in order to use PKCS #11 functions
  *      2. Connect to valid slot using the followings
- *          i.      C_Initialize() 
- *          ii.     C_OpenSession() 
- *          iii.    C_Login()
- * 		3. Generate AES key (symmetric key) by invoking
- *          i.      C_GenerateKey() 
- * 		4. Disconnect from a connect slot using the followings
- *          i.      C_Logout() 
- *          ii.     C_CloseSession() 
- *          iii.    C_Finalize()
- * 
+ *      3. Generate AES key (symmetric key) by invoking
+ *      4. Disconnect from a connect slot using the followings
+ *      
  * 
  * To use the Makefile, make sure you're in the same directory of Makefile
  * To build the program using Makefile, run the following command
