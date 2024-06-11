@@ -1,18 +1,9 @@
 /**
  * This program is an attempt to show the following operations
  * 
- * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB in order to use PKCS #11 functions
- *      2. Connect to valid slot using the followings
- *          i.      C_Initialize() 
- *          ii.     C_OpenSession() 
- *          iii.    C_Login()
- * 		3. Generate Elliptic Curve (EC) keypair (Public and Private keys) by invoking
+ * 		1. Generate Elliptic Curve (EC) keypair (Public and Private keys) by invoking
  *          i.      C_GenerateKeyPair() 
- * 		4. Disconnect from a connect slot using the followings
- *          i.      C_Logout() 
- *          ii.     C_CloseSession() 
- *          iii.    C_Finalize()
- * 
+ * 		
  *  
 */
 

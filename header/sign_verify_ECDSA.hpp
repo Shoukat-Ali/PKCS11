@@ -1,20 +1,15 @@
 /**
  * This program is an attempt to show the following operations
  * 
- * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB in order to use PKCS #11 functions
- *      2. Connect to valid slot using the followings
- *          i.      C_Initialize() 
- *          ii.     C_OpenSession() 
- *          iii.    C_Login()
- * 		3. Generate Elliptic Curve Digital Signature Algorithm (ECDSA) keypair (Public and Private keys) by invoking
- *          i.      C_GenerateKeyPair()
- *          ii.     Sign
- *          ii.     Verify 
- * 		4. Disconnect from a connect slot using the followings
- *          i.      C_Logout() 
- *          ii.     C_CloseSession() 
- *          iii.    C_Finalize()
- * 
+ * 		1. Generate Elliptic Curve Digital Signature Algorithm (ECDSA) keypair (Public and Private keys) by invoking
+ *          i.		C_GenerateKeyPair()
+ * 		2. Sign data using private key of ECDSA by invoking
+ *          i.		C_SignInit()
+ *          ii.		C_Sign () 
+ * 		3. Verify given signature on data using public key of ECDSA by invoking
+ *          i.      C_VerifyInit()
+ *          ii.     C_Verify() 
+ *          
  *  
 */
 

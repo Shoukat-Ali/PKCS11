@@ -1,10 +1,9 @@
 /**
  * This program is an attempt to show the following operations
  * 
- *      1. Load the HSM library by setting an environment variable SOFTHSM2_LIB in order to use PKCS #11 functions
- *      2. Show list of all slots and tokens (initialized or not) using 
+ *      1. Show list of all slots and tokens (initialized or not) using 
  *          i. C_GetSlotList()
- *      3. Display some slot and token information using 
+ *      2. Display some slot and token information using 
  *          i.  C_GetSlotInfo() 
  *          ii. C_GetTokenInfo()
  * 

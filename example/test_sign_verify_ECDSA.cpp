@@ -1,5 +1,14 @@
 /**
- * This program was built and executed on Ubuntu 22.04.4 LTS
+ * This program was built and executed on Ubuntu 22.04.4 LTS. The following operations are perfromed
+ * in this program.
+ * 
+ * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
+ *      in order to use PKCS #11 functions
+ *      2. Connect to valid slot
+ * 		3. Generate Elliptic Curve Digital Signature Algorithm (ECDSA) keypair (Public and Private keys)
+ * 		4. Sign data using private key of ECDSA
+ * 		5. Verify given signature on data using public key of ECDSA
+ *      6. Disconnect from a connect slot
  * 
  * To use the Makefile, make sure you're in the same directory of Makefile
  * To build the program using Makefile, run the following command

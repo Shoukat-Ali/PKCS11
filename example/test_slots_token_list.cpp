@@ -1,5 +1,12 @@
 /**
- * This program was built and executed on Ubuntu 22.04.4 LTS
+ * This program was built and executed on Ubuntu 22.04.4 LTS. The following operations are perfromed
+ * in this program.
+ * 
+ * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
+ *      in order to use PKCS #11 functions
+ *      2. Show list of all slots and tokens (initialized or not)
+ *      3. Display some slot and token information
+ * 
  * 
  * A slot is a logical reader that potentially contains a token. 
  * A token is typically “present in the slot” when a cryptographic device is present in the reader.
