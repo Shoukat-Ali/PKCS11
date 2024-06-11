@@ -1,5 +1,20 @@
 /**
- * This program was built and executed on Ubuntu 22.04.4 LTS
+ * This program was built and executed on Ubuntu 22.04.4 LTS. The following operations are perfromed
+ * in this program.
+ * 
+ * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
+ *      in order to use PKCS #11 functions
+ *      2. Connect to valid slot using the followings
+ *          i.      C_Initialize() 
+ *          ii.     C_OpenSession() 
+ *          iii.    C_Login()
+ * 		3. Generate AES key (symmetric key) by invoking
+ *          i.      C_GenerateKey() 
+ * 		4. Disconnect from a connect slot using the followings
+ *          i.      C_Logout() 
+ *          ii.     C_CloseSession() 
+ *          iii.    C_Finalize()
+ * 
  * 
  * To use the Makefile, make sure you're in the same directory of Makefile
  * To build the program using Makefile, run the following command

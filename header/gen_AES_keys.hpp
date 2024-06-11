@@ -3,19 +3,9 @@
  * (a) 128-bit (16-byte), (b) 192-bit (24-byte), and (c) 256-bit (32-byte). 
  * The following operations will be performed
  * 
- * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
- *      in order to use PKCS #11 functions
- *      2. Connect to valid slot using the followings
- *          i.      C_Initialize() 
- *          ii.     C_OpenSession() 
- *          iii.    C_Login()
- * 		3. Generate AES key (symmetric key) by invoking
+ * 		1. Generate AES key (symmetric key) by invoking
  *          i.      C_GenerateKey() 
- * 		4. Disconnect from a connect slot using the followings
- *          i.      C_Logout() 
- *          ii.     C_CloseSession() 
- *          iii.    C_Finalize()
- * 
+ * 		
  *  
 */
 
