@@ -1,5 +1,7 @@
 #include <iostream>
 #include "../header/basic_operation.hpp"
+#include "../header/gen_RSA_keypair.hpp"
+
 
 /**
  * The function attempts to generate RSA keypair (i.e., public and private keys) 
@@ -58,6 +60,22 @@ int gen_RSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
         {CKA_SENSITIVE,         &yes,               sizeof(yes)},
         {CKA_LABEL,             &prvLabel,          sizeof(prvLabel)}
     };
+
+    /**
+     * C_GenerateKeyPair() generates a public/private key pair, creating new key objects.
+     * A call to C_GenerateKeyPair() will never create just one key and return. A call can fail,
+	 * and create no keys; or it can succeed, and create a matching public/private key pair.
+	 * 
+	 * Since the types of keys to be generated are implicit in the key pair generation mechanism,
+	 * the templates do not need to supply key types. If one of the templates does supply a key
+	 * type which is inconsistent with the key generation mechanism, then C_GenerateKeyPair() 
+	 * fails and returns an error.
+     * 
+     */
+    retVal = check_operation(funclistPtr->C_GenerateKeyPair(hSession, &mechKey, 
+											attribPub, sizeof(attribPub) / sizeof(*attribPub),
+											attribPrv, sizeof(attribPrv) / sizeof(*attribPrv),
+											hPubPtr, hPrvPtr), "C_GenerateKeyPair()");
 
 
     return retVal;
