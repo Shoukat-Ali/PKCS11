@@ -9,7 +9,7 @@
  * 
  */
 int gen_RSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
-					const size_t modBitSz, CK_BYTE_PTR const pubExpn,
+					size_t modBitSz, CK_BYTE_PTR const pubExpn, const size_t pubExpnSz,
 					CK_OBJECT_HANDLE_PTR hPubPtr, CK_OBJECT_HANDLE_PTR hPrvPtr)
 {
     int retVal = 0;
@@ -33,6 +33,31 @@ int gen_RSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
     CK_BBOOL no = CK_FALSE;
     CK_UTF8CHAR pubLabel[] = "RSA public key";
     CK_UTF8CHAR prvLabel[] = "RSA private key";
+
+    /**
+     * Defining the RSA public key attributes template
+     */
+    CK_ATTRIBUTE attribPub[] = {
+        {CKA_TOKEN,             &yes,               sizeof(yes)},
+        {CKA_PRIVATE,           &no,                sizeof(no)},
+        {CKA_VERIFY,            &yes,               sizeof(yes)},
+        {CKA_ENCRYPT,           &yes,               sizeof(yes)},
+        {CKA_MODULUS_BITS,      &modBitSz,          sizeof(modBitSz)},      //RSA keypair bit-length
+        {CKA_PUBLIC_EXPONENT,   pubExpn,            pubExpnSz},
+        {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
+    };
+
+    /**
+     * Defining the RSA private key attributes template
+     */
+    CK_ATTRIBUTE attribPrv[] = {
+        {CKA_TOKEN,             &yes,               sizeof(yes)},
+        {CKA_PRIVATE,           &yes,               sizeof(yes)},
+        {CKA_SIGN,              &yes,               sizeof(yes)},
+        {CKA_DECRYPT,           &yes,               sizeof(yes)},
+        {CKA_SENSITIVE,         &yes,               sizeof(yes)},
+        {CKA_LABEL,             &prvLabel,          sizeof(prvLabel)}
+    };
 
 
     return retVal;
