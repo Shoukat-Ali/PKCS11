@@ -119,7 +119,7 @@ int main()
 	free_resource(libHandle, funclistPtr);
 	usrPIN.clear();
 	byteLen = 0;
-    delete[] ecparaPtr;
+    delete[] pubExpnPtr;
 	
 	return retVal;
 }
