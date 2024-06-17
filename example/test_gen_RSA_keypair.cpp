@@ -75,9 +75,10 @@ int main()
 
 	cout << "For RSA, we have\n"
 		 << "\t1. 2048-bit\n"
-		 << "\t2. 4096-bit\n";
+		 << "\t2. 3072-bit\n"
+		 << "\t3. 4096-bit\n";
 
-	cout << "please enter an integer (1 or 2) :: "; 
+	cout << "please enter an integer (1 to 3) :: "; 
 	cin >> choice;
 	if (!cin.good()) {
 		cout << "Error not an integer\n";
@@ -90,8 +91,12 @@ int main()
 		modBitLen = 2048;
 		break;
 	case 2:
-		modBitLen = 4096;
+		modBitLen = 3072;
 		pubExpn[sizeof(pubExpn) - 1] += 2;  // value = 65539
+		break;
+	case 3:
+		modBitLen = 4096;
+		pubExpn[sizeof(pubExpn) - 1] += 64;  // value = 65601
 		break;
 	default:
 		cout << "Sorry, incorrect choice\n";

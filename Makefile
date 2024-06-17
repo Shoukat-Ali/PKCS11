@@ -56,6 +56,13 @@ SRC_AESENCDEC = $(addprefix $(SRC_DIR),AES_enc_dec.cpp)
 MAIN_AESENCDEC = $(addprefix $(MAIN_DIR),test_AES_enc_dec.cpp)
 
 
+# Elliptic Curve (EC) keypair generation
+HDR_RSAKEYPAIR = $(addprefix $(HEADER_DIR),gen_RSA_keypair.hpp)
+SRC_RSAKEYPAIR = $(addprefix $(SRC_DIR),gen_RSA_keypair.cpp)
+MAIN_RSAKEYPAIR = $(addprefix $(MAIN_DIR),test_gen_RSA_keypair.cpp)
+
+
+
 #Object files
 OBJS_BSCOPR = src_BscOpr.o
 OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o src_BscOpr.o
@@ -64,7 +71,7 @@ OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o src_ConnDis.o src_BscOpr.o
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o src_ConnDis.o src_BscOpr.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o src_ConnDis.o src_BscOpr.o
 OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o src_AESKeys.o src_ConnDis.o src_BscOpr.o
-
+OBJS_RSAKEYPAIR = main_RSAKeypair.o src_RSAKeypair.o src_ConnDis.o src_BscOpr.o
 
 
 # Basic common operations 
@@ -140,6 +147,17 @@ test_AESEncDec: $(OBJS_AESENCDEC)
 	$(CXX) $^ -o $@
 
 
+# RSA keypair generation
+main_RSAKeypair.o: $(MAIN_RSAKEYPAIR)
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
+
+src_RSAKeypair.o: $(SRC_RSAKEYPAIR) $(HDR_RSAKEYPAIR)
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
+
+test_RSAKeypair: $(OBJS_RSAKEYPAIR)
+	$(CXX) $^ -o $@
+
+
 
 .PHONY : clean
 clean_basic_opr:
@@ -163,3 +181,5 @@ clean_test_AESKeys:
 clean_test_AESEncDec:
 	rm test_AESEncDec $(OBJS_AESENCDEC)
 
+clean_test_RSAKeypair:
+	rm test_RSAKeypair $(OBJS_RSAKEYPAIR)
