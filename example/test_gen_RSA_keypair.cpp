@@ -19,7 +19,7 @@
  *      make clean_test_RSAKeypair
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_gen_RSA_keypair.cpp ../source/gen_RSA_keypair.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ECKeypair -I../include
+ *      g++ -Wall -Werror test_gen_RSA_keypair.cpp ../source/gen_RSA_keypair.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_RSAKeypair -I../include
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -64,12 +64,11 @@ int main()
 	CK_SESSION_HANDLE hSession = 0; 
 	std::string usrPIN;
 	size_t modBitLen = 0;
-    size_t byteLen = 5;
-
+    
     /**
      * 
      */
-    CK_BYTE_PTR pubExpnPtr = NULL_PTR;
+    CK_BYTE pubExpn[] = {0x01, 0x00, 0x00, 0x00, 0x01};  // value = 65537;
 
     CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
     CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle
@@ -89,11 +88,10 @@ int main()
 	switch (choice) {
 	case 1:
 		modBitLen = 2048;
-		pubExpnPtr = new CK_BYTE[byteLen]{0x01, 0x00, 0x00, 0x00, 0x01};  // value = 65537
 		break;
 	case 2:
 		modBitLen = 4096;
-		pubExpnPtr = new CK_BYTE[byteLen]{0x01, 0x00, 0x00, 0x00, 0x03};  // value = 65539
+		pubExpn[sizeof(pubExpn) - 1] += 2;  // value = 65539
 		break;
 	default:
 		cout << "Sorry, incorrect choice\n";
@@ -107,8 +105,8 @@ int main()
 		if (!(retVal = connect_slot(funclistPtr, hSession, usrPIN))) {
 			cout << "Connected to token successfully\n";
 			if(!(retVal = gen_RSA_keypair(funclistPtr, hSession, modBitLen, 
-                                        pubExpnPtr, byteLen, &hPublic, &hPrivate))) {
-				cout << "\tElliptic Curve (EC) keypair successfully generated\n";
+                                        pubExpn, sizeof(pubExpn), &hPublic, &hPrivate))) {
+				cout << "\tRSA keypair successfully generated\n";
 			}
 
 			if (!(retVal = disconnect_slot(funclistPtr, hSession))) {
@@ -118,8 +116,6 @@ int main()
 	}
 	free_resource(libHandle, funclistPtr);
 	usrPIN.clear();
-	byteLen = 0;
-    delete[] pubExpnPtr;
 	
 	return retVal;
 }
