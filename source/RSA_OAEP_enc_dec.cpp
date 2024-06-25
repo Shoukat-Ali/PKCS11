@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "../header/basic_operation.hpp"
 #include "../header/conn_dis_token.hpp"
 #include "../header/gen_RSA_keypair.hpp"
@@ -31,8 +32,10 @@ CK_RSA_PKCS_OAEP_PARAMS paramOAEP;
  * parameters to be used in the CKM_RSA_PKCS_OAEP mechanism
  * 
  * The function does not return anything.
+ * 
+ * TODO: this function might be moved to main() for direct initialization
  */
-void init_OAEP()
+inline void init_OAEP()
 {
     paramOAEP.hashAlg = CKM_SHA256;
     paramOAEP.mgf = CKG_MGF1_SHA256;
@@ -45,4 +48,47 @@ void init_OAEP()
     paramOAEP.pSourceData = NULL;
     paramOAEP.ulSourceDataLen = 0;
     
+}
+
+
+/**
+ * The function encrypts given plaintext using RAS-OAEP
+ * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * hPub is an alias of public key handle
+ * plaintext is an alias of plaintext (source) to be encrypted
+ * ciphertext is an alias ciphertext (destination) to be returned
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned. 
+ */
+int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+                    const CK_OBJECT_HANDLE& hPub, const std::string& plaintext,
+                    std::string& ciphertext)
+{
+    int retVal = 0;
+    CK_BYTE_PTR ctPtr = NULL_PTR;
+    size_t ctLen = 0;
+    
+    // Checking given pointers is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 4;
+	}
+	init_OAEP();
+	CK_MECHANISM encMech = {CKM_RSA_PKCS_OAEP, &paramOAEP, sizeof(paramOAEP)};
+	
+    retVal = check_operation(funclistPtr->C_EncryptInit(hSession, &encMech, hPub), "C_EncryptInit()");
+	if (!retVal) {
+        // The encryption operation successfully initialized
+        retVal = check_operation(funclistPtr->C_Encrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(plaintext.c_str())),
+                                            plaintext.length(), NULL_PTR, &ctLen), "C_Encrypt()");
+                                            
+        ctPtr = new CK_BYTE[ctLen];
+        retVal = check_operation(funclistPtr->C_Encrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(plaintext.c_str())),
+                                            plaintext.length(), ctPtr, &ctLen), "C_Encrypt()");
+
+        ciphertext.assign(ctPtr, ctPtr + ctLen);
+        delete[] ctPtr;   // Memory de-allocated
+    }
+    return retVal;
 }

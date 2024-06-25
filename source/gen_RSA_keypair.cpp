@@ -7,6 +7,14 @@
  * The function attempts to generate RSA keypair (i.e., public and private keys) 
  * based on given bit size.
  * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * modBitSz represents the bit-size of the RSA modulus
+ * pubExpn is a constant pointer to CK_BYTE array
+ * pubExpnSz represents the byte-length of public exponent
+ * hPubPtr is a pointer to public key handle
+ * hPrvPtr is a pointer to private key handle 
+ * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  * 
  */

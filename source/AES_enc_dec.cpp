@@ -51,10 +51,8 @@ CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
  * hSecretkey is an alias of secret key handle
- * ptPtr is a pointer to array of unsinged 8-bit character representing plaintext (source)
- * ptLen represents the byte-length of plaintext
- * ctPtr is a pointer to array of unsinged 8-bit character representing ciphertext (destination)
- * ctLen represents the byte-length of ciphertext
+ * plaintext is an alias of plaintext (source) to be encrypted
+ * ciphertext is an alias ciphertext (destination) to be returned
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
@@ -152,10 +150,8 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
  * hSecretkey is an alias of secret key handle
- * ctPtr is a pointer to array of unsinged 8-bit character representing ciphertext (source)
- * ctLen represents the byte-length of ciphertext
- * ptPtr is a pointer to array of unsinged 8-bit character representing plaintext (destination)
- * ptLen represents the byte-length of plaintext
+ * ciphertext is an alias of ciphertext (source) to be decrypted
+ * plaintext is an alias plaintext (destination) to be returned
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
 */
