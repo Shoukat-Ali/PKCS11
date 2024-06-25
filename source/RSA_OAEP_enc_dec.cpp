@@ -92,3 +92,46 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
     }
     return retVal;
 }
+
+
+
+/**
+ * The function encrypts given plaintext using RAS-OAEP
+ * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
+ * hSession is an alias of session ID/handle
+ * hPub is an alias of public key handle
+ * ciphertext is an alias ciphertext (source) to be decrypted
+ * plaintext is an alias of plaintext (destination) to be returned
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned. 
+ */
+int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+                        const CK_OBJECT_HANDLE& hPrv, const std::string& ciphertext,
+                        std::string& plaintext)
+{
+    int retVal = 0;
+    CK_BYTE_PTR dtPtr = NULL_PTR;
+    size_t dtLen = 0;
+    
+    // Checking given pointers is null or not 
+	if (is_nullptr(funclistPtr)) {
+		return 4;
+	}
+	CK_MECHANISM encMech = {CKM_RSA_PKCS_OAEP, &paramOAEP, sizeof(paramOAEP)};
+	
+    retVal = check_operation(funclistPtr->C_EncryptInit(hSession, &encMech, hPrv), "C_EncryptInit()");
+	if (!retVal) {
+        // The encryption operation successfully initialized
+        retVal = check_operation(funclistPtr->C_Decrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(ciphertext.c_str())),
+                                            ciphertext.length(), NULL_PTR, &dtLen), "C_Encrypt()");
+                                            
+        dtPtr = new CK_BYTE[dtLen];
+        retVal = check_operation(funclistPtr->C_Decrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(ciphertext.c_str())),
+                                            ciphertext.length(), dtPtr, &dtLen), "C_Encrypt()");
+
+        plaintext.assign(dtPtr, dtPtr + dtLen);
+        delete[] dtPtr;   // Memory de-allocated
+    }
+    return retVal;
+}
