@@ -5,7 +5,7 @@
  * 		1. Load the HSM library by setting an environment variable SOFTHSM2_LIB 
  *      in order to use PKCS #11 functions
  *      2. Connect to valid slot
- * 		3. Generate RSA keypair (Public and Private keys)
+ * 		3. Generate RSA key pair (Public and Private keys)
  *      4. Disconnect from a connect slot
  * 
  * To use the Makefile, make sure you're in the same directory of Makefile
