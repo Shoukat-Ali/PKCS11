@@ -1,9 +1,6 @@
 #include <iostream>
-#include <string>
 #include "../header/basic_operation.hpp"
-#include "../header/conn_dis_token.hpp"
-#include "../header/gen_RSA_keypair.hpp"
-
+#include "../header/RSA_OAEP_enc_dec.hpp"
 
 /**
  * CK_RSA_PKCS_OAEP_PARAMS is a structure that provides the parameters to the
@@ -100,7 +97,7 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
  * 
  * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
- * hPub is an alias of public key handle
+ * hPrv is an alias of private key handle
  * ciphertext is an alias ciphertext (source) to be decrypted
  * plaintext is an alias of plaintext (destination) to be returned
  * 
