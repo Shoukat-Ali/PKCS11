@@ -57,6 +57,9 @@ int gen_RSA_keypair(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& h
         {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
     };
 
+    // std::cout << "Public key attributes\n" 
+    //           << "\t Modulus bit-size       :: " << *(reinterpret_cast<CK_ULONG_PTR>(attribPub[4].pValue)) << std::endl;
+
     /**
      * Defining the RSA private key attributes template
      */

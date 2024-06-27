@@ -68,7 +68,7 @@ int main()
     /**
      * 
      */
-    CK_BYTE pubExpn[] = {0x01, 0x00, 0x00, 0x00, 0x01};  // value = 65537;
+    CK_BYTE pubExpn[] = {0x01, 0x00, 0x01};  // value = 65537;
 
     CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
     CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle
@@ -111,7 +111,7 @@ int main()
 			cout << "Connected to token successfully\n";
 			if(!(retVal = gen_RSA_keypair(funclistPtr, hSession, modBitLen, 
                                         pubExpn, sizeof(pubExpn), &hPublic, &hPrivate))) {
-				cout << "\tRSA keypair successfully generated\n";
+				cout << "\tRSA " << modBitLen << "-bit modulus key pair successfully generated\n";
 			}
 
 			if (!(retVal = disconnect_slot(funclistPtr, hSession))) {
