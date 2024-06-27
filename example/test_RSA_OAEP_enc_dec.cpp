@@ -75,7 +75,7 @@ int main()
     /**
      * 
      */
-    CK_BYTE pubExpn[] = {0x01, 0x00, 0x00, 0x00, 0x01};  // value = 65537;
+    CK_BYTE pubExpn[] = {0x01, 0x00, 0x01};  // value = 65537;
 
     CK_OBJECT_HANDLE hPublic = 0;   // Public key handle
     CK_OBJECT_HANDLE hPrivate = 0;  // Private key handle
@@ -126,13 +126,13 @@ int main()
                 if (!retVal) {
                     cout << "\tData successfully encrypted\n";
                     // Decrypt ciphertext
-                    retVal = decrypt_ciphertext(funclistPtr, hSession, hPrivate,
-                                                ciphertext, dectext);
+                    // retVal = decrypt_ciphertext(funclistPtr, hSession, hPrivate,
+                    //                             ciphertext, dectext);
                                                 
-                    // Comparing plaintext to decrypted text
-                    if (!plaintext.compare(dectext)) {
-                        cout << "\tAfter decryption, plaintext matches decrypted text!!!\n";
-                    }
+                    // // Comparing plaintext to decrypted text
+                    // if (!plaintext.compare(dectext)) {
+                    //     cout << "\tAfter decryption, plaintext matches decrypted text!!!\n";
+                    // }
                 }
 
 			}

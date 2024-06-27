@@ -22,6 +22,12 @@ using std::endl;
 int check_operation(const CK_RV rv, const char* message)
 {
 	if (rv != CKR_OK) {
+		if (rv == CKR_KEY_SIZE_RANGE || rv == CKR_KEY_TYPE_INCONSISTENT) {
+			// || rv == CKR_MECHANISM_INVALID || rv == CKR_MECHANISM_PARAM_INVALID
+			// || rv == CKR_OPERATION_ACTIVE || rv == CKR_PIN_EXPIRED || rv == CKR_SESSION_CLOSED
+			// || rv == CKR_SESSION_HANDLE_INVALID || rv == CKR_USER_NOT_LOGGED_IN) {
+        	std::cout << "Debugging\n";
+    	}
 		cout << "Error, " << message << " failed with RV : " << rv << endl;
 		return 1;
 	}

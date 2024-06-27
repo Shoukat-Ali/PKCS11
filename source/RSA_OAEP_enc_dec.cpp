@@ -75,6 +75,7 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 	CK_MECHANISM encMech = {CKM_RSA_PKCS_OAEP, &paramOAEP, sizeof(paramOAEP)};
 	
     retVal = check_operation(funclistPtr->C_EncryptInit(hSession, &encMech, hPub), "C_EncryptInit()");
+    
 	if (!retVal) {
         // The encryption operation successfully initialized
         retVal = check_operation(funclistPtr->C_Encrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(plaintext.c_str())),
@@ -117,15 +118,16 @@ int decrypt_ciphertext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE
 	}
 	CK_MECHANISM encMech = {CKM_RSA_PKCS_OAEP, &paramOAEP, sizeof(paramOAEP)};
 	
-    retVal = check_operation(funclistPtr->C_EncryptInit(hSession, &encMech, hPrv), "C_EncryptInit()");
+    retVal = check_operation(funclistPtr->C_DecryptInit(hSession, &encMech, hPrv), "C_DecryptInit()");
+    
 	if (!retVal) {
         // The encryption operation successfully initialized
         retVal = check_operation(funclistPtr->C_Decrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(ciphertext.c_str())),
-                                            ciphertext.length(), NULL_PTR, &dtLen), "C_Encrypt()");
+                                            ciphertext.length(), NULL_PTR, &dtLen), "C_Decrypt()");
                                             
         dtPtr = new CK_BYTE[dtLen];
         retVal = check_operation(funclistPtr->C_Decrypt(hSession, reinterpret_cast<CK_CHAR_PTR>(const_cast<char*>(ciphertext.c_str())),
-                                            ciphertext.length(), dtPtr, &dtLen), "C_Encrypt()");
+                                            ciphertext.length(), dtPtr, &dtLen), "C_Decrypt()");
 
         plaintext.assign(dtPtr, dtPtr + dtLen);
         delete[] dtPtr;   // Memory de-allocated
