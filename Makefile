@@ -32,7 +32,7 @@ SRC_STLIST = $(addprefix $(SRC_DIR),slots_token_list.cpp)
 MAIN_STLIST = $(addprefix $(MAIN_DIR),test_slots_token_list.cpp)
 
 
-# Elliptic Curve (EC) keypair generation
+# Elliptic Curve (EC) key pair generation
 HDR_ECKEYPAIR = $(addprefix $(HEADER_DIR),gen_EC_keypair.hpp)
 SRC_ECKEYPAIR = $(addprefix $(SRC_DIR),gen_EC_keypair.cpp)
 MAIN_ECKEYPAIR = $(addprefix $(MAIN_DIR),test_gen_EC_keypair.cpp)
@@ -56,11 +56,16 @@ SRC_AESENCDEC = $(addprefix $(SRC_DIR),AES_enc_dec.cpp)
 MAIN_AESENCDEC = $(addprefix $(MAIN_DIR),test_AES_enc_dec.cpp)
 
 
-# Elliptic Curve (EC) keypair generation
+# Rivest–Shamir–Adleman (RSA) key pair generation
 HDR_RSAKEYPAIR = $(addprefix $(HEADER_DIR),gen_RSA_keypair.hpp)
 SRC_RSAKEYPAIR = $(addprefix $(SRC_DIR),gen_RSA_keypair.cpp)
 MAIN_RSAKEYPAIR = $(addprefix $(MAIN_DIR),test_gen_RSA_keypair.cpp)
 
+
+# RSA-OAEP encryption scheme
+HDR_RSAOAEP = $(addprefix $(HEADER_DIR),RSA_OAEP_enc_dec.hpp)
+SRC_RSAOAEP = $(addprefix $(SRC_DIR),RSA_OAEP_enc_dec.cpp)
+MAIN_RSAOAEP = $(addprefix $(MAIN_DIR),test_RSA_OAEP_enc_dec.cpp)
 
 
 #Object files
@@ -72,6 +77,7 @@ OBJS_ECDSA = main_ECDSA.o src_ECDSA.o src_ConnDis.o src_BscOpr.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o src_ConnDis.o src_BscOpr.o
 OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o src_AESKeys.o src_ConnDis.o src_BscOpr.o
 OBJS_RSAKEYPAIR = main_RSAKeypair.o src_RSAKeypair.o src_ConnDis.o src_BscOpr.o
+OBJS_RSAOAEP = main_RSAOAEP.o src_RSAOAEP.o src_RSAKeypair.o src_ConnDis.o src_BscOpr.o
 
 
 # Basic common operations 
@@ -103,7 +109,7 @@ test_STList: $(OBJS_STLIST)
 	$(CXX) $^ -o $@
 
 
-# EC keypair files
+# EC key pair generation files
 main_ECKeypair.o: $(MAIN_ECKEYPAIR)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
@@ -125,7 +131,7 @@ test_ECDSA: $(OBJS_ECDSA)
 	$(CXX) $^ -o $@
 
 
-# Advanced Encryption Standard (AES) secret key generation
+# Advanced Encryption Standard (AES) secret key generation files
 main_AESKeys.o: $(MAIN_AESKEYS)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
@@ -136,7 +142,7 @@ test_AESKeys: $(OBJS_AESKEYS)
 	$(CXX) $^ -o $@
 
 
-# Advanced Encryption Standard (AES) encryption and decryption operation
+# Advanced Encryption Standard (AES) encryption and decryption operation files
 main_AESEncDec.o: $(MAIN_AESENCDEC)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
@@ -147,7 +153,7 @@ test_AESEncDec: $(OBJS_AESENCDEC)
 	$(CXX) $^ -o $@
 
 
-# RSA keypair generation
+# RSA key pair generation files
 main_RSAKeypair.o: $(MAIN_RSAKEYPAIR)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
@@ -155,6 +161,17 @@ src_RSAKeypair.o: $(SRC_RSAKEYPAIR) $(HDR_RSAKEYPAIR)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 test_RSAKeypair: $(OBJS_RSAKEYPAIR)
+	$(CXX) $^ -o $@
+
+
+# RSA-OAEP encryption scheme files
+main_RSAOAEP.o: $(MAIN_RSAOAEP)
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
+
+src_RSAOAEP.o: $(SRC_RSAOAEP) $(HDR_RSAOAEP)
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
+
+test_RSAOAEP: $(OBJS_RSAOAEP)
 	$(CXX) $^ -o $@
 
 
@@ -183,3 +200,6 @@ clean_test_AESEncDec:
 
 clean_test_RSAKeypair:
 	rm test_RSAKeypair $(OBJS_RSAKEYPAIR)
+
+clean_test_RSAOAEP:
+	rm test_RSAOAEP $(OBJS_RSAOAEP)
