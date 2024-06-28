@@ -34,8 +34,8 @@ CK_RSA_PKCS_OAEP_PARAMS paramOAEP;
  */
 inline void init_OAEP()
 {
-    paramOAEP.hashAlg = CKM_SHA256;
-    paramOAEP.mgf = CKG_MGF1_SHA256;
+    paramOAEP.hashAlg = CKM_SHA_1;
+    paramOAEP.mgf = CKG_MGF1_SHA1;
     /**
      * CKZ_DATA_SPECIFIED is an array of CK_BYTE containing the value
      * of the encoding parameter. If the parameter is empty, 

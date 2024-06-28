@@ -22,12 +22,17 @@ using std::endl;
 int check_operation(const CK_RV rv, const char* message)
 {
 	if (rv != CKR_OK) {
-		if (rv == CKR_KEY_SIZE_RANGE || rv == CKR_KEY_TYPE_INCONSISTENT) {
-			// || rv == CKR_MECHANISM_INVALID || rv == CKR_MECHANISM_PARAM_INVALID
-			// || rv == CKR_OPERATION_ACTIVE || rv == CKR_PIN_EXPIRED || rv == CKR_SESSION_CLOSED
-			// || rv == CKR_SESSION_HANDLE_INVALID || rv == CKR_USER_NOT_LOGGED_IN) {
-        	std::cout << "Debugging\n";
-    	}
+		// if (rv == CKR_CRYPTOKI_NOT_INITIALIZED || rv == CKR_DEVICE_ERROR
+		// 	|| rv == CKR_DEVICE_MEMORY || rv == CKR_DEVICE_REMOVED
+		// 	|| rv == CKR_FUNCTION_CANCELED || rv == CKR_FUNCTION_FAILED
+		// 	|| rv == CKR_GENERAL_ERROR || rv == CKR_HOST_MEMORY
+		// 	|| rv == CKR_KEY_FUNCTION_NOT_PERMITTED || rv == CKR_KEY_HANDLE_INVALID 
+		// 	||rv == CKR_KEY_SIZE_RANGE || rv == CKR_KEY_TYPE_INCONSISTENT 
+		// 	|| rv == CKR_MECHANISM_INVALID || rv == CKR_MECHANISM_PARAM_INVALID
+		// 	|| rv == CKR_OPERATION_ACTIVE || rv == CKR_PIN_EXPIRED || rv == CKR_SESSION_CLOSED
+		// 	|| rv == CKR_SESSION_HANDLE_INVALID || rv == CKR_USER_NOT_LOGGED_IN) {
+        // 	std::cout << "Debugging\n";
+    	// }
 		cout << "Error, " << message << " failed with RV : " << rv << endl;
 		return 1;
 	}
