@@ -36,6 +36,18 @@ inline void init_OAEP()
 {
     paramOAEP.hashAlg = CKM_SHA_1;
     paramOAEP.mgf = CKG_MGF1_SHA1;
+    
+    // It seems the softHSM2 version 2.6.1 does not support SHA256
+    // paramOAEP.hashAlg = CKM_SHA256;
+    // paramOAEP.mgf = CKG_MGF1_SHA256;
+
+    // It seems the softHSM2 version 2.6.1 does not support SHA384
+    // paramOAEP.hashAlg = CKM_SHA384;
+    // paramOAEP.mgf = CKG_MGF1_SHA384;
+
+    // It seems the softHSM2 version 2.6.1 does not support SHA512
+    // paramOAEP.hashAlg = CKM_SHA512;
+    // paramOAEP.mgf = CKG_MGF1_SHA512;
     /**
      * CKZ_DATA_SPECIFIED is an array of CK_BYTE containing the value
      * of the encoding parameter. If the parameter is empty, 
@@ -73,7 +85,12 @@ int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE&
 	}
 	init_OAEP();
 	CK_MECHANISM encMech = {CKM_RSA_PKCS_OAEP, &paramOAEP, sizeof(paramOAEP)};
-	
+
+	// For debugging purpose
+    // CK_RV rv = funclistPtr->C_EncryptInit(hSession, &encMech, hPub);
+    // if (rv == CKR_ARGUMENTS_BAD) {
+    //     	std::cout << "Debugging\n";
+    // }
     retVal = check_operation(funclistPtr->C_EncryptInit(hSession, &encMech, hPub), "C_EncryptInit()");
     
 	if (!retVal) {

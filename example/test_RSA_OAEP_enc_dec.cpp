@@ -68,8 +68,8 @@ int main()
 	std::string usrPIN;
 	size_t modBitLen = 0;
 
-    std::string plaintext("This is to test our RSA-OAEO encryption scheme implementation.");
-    std::string ciphertext;
+    std::string plaintext("This is to test our RSA-OAEP encryption scheme implementation.");
+	std::string ciphertext;
     std::string dectext;
     
     /**
@@ -95,14 +95,14 @@ int main()
 
 	switch (choice) {
 	case 1:
-		modBitLen = 2048;
+		modBitLen = 2048;	// 256-byte
 		break;
 	case 2:
-		modBitLen = 3072;
+		modBitLen = 3072;	// 384-byte
 		pubExpn[sizeof(pubExpn) - 1] += 2;  // value = 65539
 		break;
 	case 3:
-		modBitLen = 4096;
+		modBitLen = 4096;	// 512-byte
 		pubExpn[sizeof(pubExpn) - 1] += 64;  // value = 65601
 		break;
 	default:
@@ -130,6 +130,7 @@ int main()
                                                 ciphertext, dectext);
                                                 
                     // Comparing plaintext to decrypted text
+					// dectext += "a";
                     if (!plaintext.compare(dectext)) {
                         cout << "\tAfter decryption, plaintext matches decrypted text!!!\n";
                     }
