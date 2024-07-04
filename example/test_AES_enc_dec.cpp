@@ -142,7 +142,7 @@ int main()
                 // AES secret key successfully generated
                 cout << "\t"<< label << " successfully generated\n";
                 // Initializing the AES CBC encryption mechansim
-                retVal = init_Mech(hSession, IV, sizeof(IV));
+                retVal = init_Mech(funclistPtr, hSession, IV, sizeof(IV));
                 if (!retVal) {
                     // Encrypt plaintext
                     retVal = encrypt_plaintext(funclistPtr, hSession, keyHandle,

@@ -25,13 +25,15 @@ using std::cout;
  * The function generates a random data of fixed byte-length to be used as
  * an initialization vector (IV) in modes of operation.
  *  
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
  * ptrIV is a constant pointer to array of CK_BYTE
  * lenIV represents the byte-length of IV
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  */
-inline int gen_rand_IV(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, const size_t lenIV)
+inline int gen_rand_IV(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+                        CK_BYTE_PTR const ptrIV, const size_t lenIV)
 {
     /**
      * CK_RV C_GenerateRandom(CK_SESSION_HANDLE hSession,
@@ -45,7 +47,7 @@ inline int gen_rand_IV(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, con
      * ulRandomLen is the length in bytes of the random or pseudo-random data to be
      * generated.
      */
-    return check_operation(C_GenerateRandom(hSession, ptrIV, lenIV), "C_GenerateRandom()");
+    return check_operation(funclistPtr->C_GenerateRandom(hSession, ptrIV, lenIV), "C_GenerateRandom()");
 }
 
 
@@ -74,16 +76,18 @@ CK_MECHANISM encMech;
 /**
  * The function initializes the AES CBC padding mechansim 
  * 
+ * funclistPtr is a pointer to the list of functions i.e., CK_FUNCTION_LIST_PTR
  * hSession is an alias of session ID/handle
  * ptrIV is a constant pointer to array of CK_BYTE
  * lenIV represents the byte-length of IV
  *  
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  */
-int init_Mech(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, const size_t lenIV)
+int init_Mech(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+                CK_BYTE_PTR const ptrIV, const size_t lenIV)
 {
     int retVal = 0;
-    retVal = gen_rand_IV(hSession, ptrIV, lenIV);
+    retVal = gen_rand_IV(funclistPtr, hSession, ptrIV, lenIV);
     if (!retVal) {
         // Initialization vector (IV) successfully generated randomly
         encMech = {CKM_AES_CBC_PAD, ptrIV, lenIV};

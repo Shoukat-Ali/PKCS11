@@ -20,7 +20,8 @@
 #include <string>
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 
-int init_Mech(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, const size_t lenIV);
+int init_Mech(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
+                CK_BYTE_PTR const ptrIV, const size_t lenIV);
 
 int encrypt_plaintext(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE& hSession,
                         const CK_OBJECT_HANDLE& hSecretkey,
