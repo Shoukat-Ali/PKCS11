@@ -59,6 +59,8 @@
 // AES uses 128-bit (16-byte) block
 // #define AES_BLOCK_BYTE_LEN 16
 
+// For now, to set IV length
+#define BYTE_LEN 16
 
 using std::cout;
 using std::endl;
@@ -138,6 +140,7 @@ int main()
             if (!retVal) {
                 // AES secret key successfully generated
                 cout << "\t"<< label << " successfully generated\n";
+                retVal = init_Mech(hSession, IV, sizeof(IV));
                 // Encrypt plaintext
                 retVal = encrypt_plaintext(funclistPtr, hSession, keyHandle,
                                             plaintext, ciphertext);

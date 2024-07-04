@@ -7,7 +7,7 @@ using std::cout;
 
 
 // For now, to set IV length
-#define BYTE_LEN 16
+// #define BYTE_LEN 16
 
 
 /**
@@ -26,10 +26,12 @@ CK_BYTE IV[BYTE_LEN];
  * an initialization vector (IV) in modes of operation.
  *  
  * hSession is an alias of session ID/handle
+ * ptrIV is a constant pointer to array of CK_BYTE
+ * lenIV represents the byte-length of IV
  * 
  * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
  */
-inline int gen_rand_IV(CK_SESSION_HANDLE& hSession)
+inline int gen_rand_IV(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, const size_t lenIV)
 {
     /**
      * CK_RV C_GenerateRandom(CK_SESSION_HANDLE hSession,
@@ -43,7 +45,7 @@ inline int gen_rand_IV(CK_SESSION_HANDLE& hSession)
      * ulRandomLen is the length in bytes of the random or pseudo-random data to be
      * generated.
      */
-    return check_operation(C_GenerateRandom(hSession, IV, sizeof(IV)), "C_GenerateRandom()");
+    return check_operation(C_GenerateRandom(hSession, ptrIV, lenIV), "C_GenerateRandom()");
 }
 
 
@@ -68,6 +70,27 @@ inline int gen_rand_IV(CK_SESSION_HANDLE& hSession)
 */
 // CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
 CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)};
+
+/**
+ * The function initializes the AES CBC padding mechansim 
+ * 
+ * hSession is an alias of session ID/handle
+ * ptrIV is a constant pointer to array of CK_BYTE
+ * lenIV represents the byte-length of IV
+ *  
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+ */
+int init_Mech(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, const size_t lenIV)
+{
+    int retVal = 0;
+    retVal = gen_rand_IV(hSession, ptrIV, lenIV);
+    if (!retVal) {
+        // Initialization vector (IV) successfully generated randomly
+        CK_MECHANISM encMech = {CKM_AES_CBC_PAD, ptrIV, lenIV};
+    }
+    return retVal;
+}
+
 
 
 /**
