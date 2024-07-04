@@ -7,7 +7,7 @@ using std::cout;
 
 
 // For now, to set IV length
-// #define BYTE_LEN 16
+#define BYTE_LEN 16
 
 
 /**
@@ -18,7 +18,33 @@ using std::cout;
  * 
  * TODO: generate random IV  
 */
-CK_BYTE IV[] = "UTf34-ijhy;it1MB";
+// CK_BYTE IV[] = "UTf34-ijhy;it1MB";
+CK_BYTE IV[BYTE_LEN];
+
+/**
+ * The function generates a random data of fixed byte-length to be used as
+ * an initialization vector (IV) in modes of operation.
+ *  
+ * hSession is an alias of session ID/handle
+ * 
+ * On success, integer 0 is returned. Otherwise, non-zero integer is returned.
+ */
+inline int gen_rand_IV(CK_SESSION_HANDLE& hSession)
+{
+    /**
+     * CK_RV C_GenerateRandom(CK_SESSION_HANDLE hSession,
+     *                          CK_BYTE_PTR pRandomData,
+     *                          CK_ULONG ulRandomLen);
+     * 
+     * C_GenerateRandom() generates random or pseudo-random data. 
+     * 
+     * hSession is the session’s handle; 
+     * pRandomData points to the location that receives the random data; and
+     * ulRandomLen is the length in bytes of the random or pseudo-random data to be
+     * generated.
+     */
+    return check_operation(C_GenerateRandom(hSession, IV, sizeof(IV)), "C_GenerateRandom()");
+}
 
 
 /**
@@ -40,8 +66,8 @@ CK_BYTE IV[] = "UTf34-ijhy;it1MB";
  * It has a parameter, a 16-byte initialization vector.
 
 */
-CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
-
+// CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
+CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)};
 
 
 /**
