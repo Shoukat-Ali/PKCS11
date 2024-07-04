@@ -78,6 +78,7 @@ int main()
 	CK_SESSION_HANDLE hSession = 0; 
 	std::string usrPIN;
     CK_ULONG keyLen = 0;
+    CK_BYTE IV[BYTE_LEN];
     
     std::string label("AES xxx-bit key");
     std::string plaintext("This is to test our AES encryption scheme implementation and we are adding some texts on line #2");
@@ -140,19 +141,22 @@ int main()
             if (!retVal) {
                 // AES secret key successfully generated
                 cout << "\t"<< label << " successfully generated\n";
+                // Initializing the AES CBC encryption mechansim
                 retVal = init_Mech(hSession, IV, sizeof(IV));
-                // Encrypt plaintext
-                retVal = encrypt_plaintext(funclistPtr, hSession, keyHandle,
-                                            plaintext, ciphertext);
                 if (!retVal) {
-                    cout << "\tData successfully encrypted\n";
-                    // Decrypt ciphertext
-                    retVal = decrypt_ciphertext(funclistPtr, hSession, keyHandle,
+                    // Encrypt plaintext
+                    retVal = encrypt_plaintext(funclistPtr, hSession, keyHandle,
+                                            plaintext, ciphertext);
+                    if (!retVal) {
+                        cout << "\tData successfully encrypted\n";
+                        // Decrypt ciphertext
+                        retVal = decrypt_ciphertext(funclistPtr, hSession, keyHandle,
                                                 ciphertext, dectext);
-                                                
-                    // Comparing plaintext to decrypted text
-                    if (!plaintext.compare(dectext)) {
-                        cout << "\tAfter decryption, plaintext matches decrypted text!!!\n";
+                        
+                        // Comparing plaintext to decrypted text
+                        if (!plaintext.compare(dectext)) {
+                            cout << "\tAfter decryption, plaintext matches decrypted text!!!\n";
+                        }
                     }
                 }
             }

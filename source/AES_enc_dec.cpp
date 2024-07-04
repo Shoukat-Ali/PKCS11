@@ -19,7 +19,7 @@ using std::cout;
  * TODO: generate random IV  
 */
 // CK_BYTE IV[] = "UTf34-ijhy;it1MB";
-CK_BYTE IV[BYTE_LEN];
+// CK_BYTE IV[BYTE_LEN];
 
 /**
  * The function generates a random data of fixed byte-length to be used as
@@ -69,7 +69,7 @@ inline int gen_rand_IV(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, con
 
 */
 // CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
-CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)};
+CK_MECHANISM encMech;
 
 /**
  * The function initializes the AES CBC padding mechansim 
@@ -86,7 +86,7 @@ int init_Mech(CK_SESSION_HANDLE& hSession, CK_BYTE_PTR const ptrIV, const size_t
     retVal = gen_rand_IV(hSession, ptrIV, lenIV);
     if (!retVal) {
         // Initialization vector (IV) successfully generated randomly
-        CK_MECHANISM encMech = {CKM_AES_CBC_PAD, ptrIV, lenIV};
+        encMech = {CKM_AES_CBC_PAD, ptrIV, lenIV};
     }
     return retVal;
 }
