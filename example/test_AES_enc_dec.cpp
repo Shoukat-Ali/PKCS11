@@ -62,6 +62,7 @@
 // For now, to set IV length
 #define BYTE_LEN 16
 
+
 using std::cout;
 using std::endl;
 using std::cin;
@@ -78,6 +79,15 @@ int main()
 	CK_SESSION_HANDLE hSession = 0; 
 	std::string usrPIN;
     CK_ULONG keyLen = 0;
+
+    /**
+     * An initialization vector (IV) is used by several modes to randomize the encryption
+     * such that if the same plaintext is encrypted multiple times, then distinct ciphertexts
+     * are produced. Usually, an IV usually does not need to be secret. 
+     * For most block cipher modes, it is important that an IV is never reused under the same key.
+     * 
+     * */
+    // CK_BYTE IV[] = "UTf34-ijhy;it1MB";   // Fixed IV
     CK_BYTE IV[BYTE_LEN];
     
     std::string label("AES xxx-bit key");
@@ -154,6 +164,7 @@ int main()
                                                 ciphertext, dectext);
                         
                         // Comparing plaintext to decrypted text
+                        // dectext += "error";
                         if (!plaintext.compare(dectext)) {
                             cout << "\tAfter decryption, plaintext matches decrypted text!!!\n";
                         }

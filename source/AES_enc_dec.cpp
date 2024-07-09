@@ -6,20 +6,8 @@
 using std::cout; 
 
 
-// For now, to set IV length
-// #define BYTE_LEN 16
 
 
-/**
- * An initialization vector (IV) is used by several modes to randomize the encryption 
- * such that if the same plaintext is encrypted multiple times, then distinct ciphertexts
- * are produced. Usually, an IV usually does not need to be secret. 
- * For most block cipher modes, it is important that an IV is never reused under the same key.
- * 
- * TODO: generate random IV  
-*/
-// CK_BYTE IV[] = "UTf34-ijhy;it1MB";
-// CK_BYTE IV[BYTE_LEN];
 
 /**
  * The function generates a random data of fixed byte-length to be used as
@@ -70,7 +58,6 @@ inline int gen_rand_IV(const CK_FUNCTION_LIST_PTR funclistPtr, CK_SESSION_HANDLE
  * It has a parameter, a 16-byte initialization vector.
 
 */
-// CK_MECHANISM encMech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
 CK_MECHANISM encMech;
 
 /**
