@@ -1,13 +1,6 @@
 #include <iostream>
-
-// Operating System either Linux or Windows
-#ifdef WIN
-	#include <windows.h>	// On Windows, required for WinAPI
-	#include "..\header\conn_dis_token.hpp"
-#else
-	#include <dlfcn.h>		// On Linux, required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
-	#include "../header/basic_operation.hpp"
-#endif
+#include <dlfcn.h>		// On Linux, required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
+#include "../header/basic_operation.hpp"
 
  
 
@@ -38,7 +31,6 @@ int check_operation(const CK_RV rv, const char* message)
 
 
 
-
 /**
  * The function attempts to load SoftHSM library in order to use PKCS# 11 functions/API.
  * 
@@ -61,7 +53,6 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
      *  1. Open .profile file in your home directory
      *  2. Simple run the command in the working terminal
 	 * 
-	 * On Windows, go to "Advance system settings" and click the "environment variables" button.
 	 * 
 	 * char *getenv(const char *name);
 	 * 
@@ -79,98 +70,62 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 		return 2;
 	}
 	
-	
-	#ifdef WIN
-		/**
-		 * The LoadLibrary() function maps the specified DLL file into the address space 
-		 * of the calling process.
-		 * 		HINSTANCE LoadLibrary(lpLibFileName);
-		 * 
-		 * lpLibFileName is a pointer to a null-terminated string that names the DLL file.
-		 * The name specified is the file name of the module and is not related to the name 
-		 * stored in the library module itself, as specified by the LIBRARY keyword 
-		 * in the module-definition (.def) file. If the string specifies a path but the file 
-		 * does not exist in the specified directory, the function fails.
-		 * When specifying a path, be sure to use backslashes (\), not forward slashes (/).
-		 * If the string does not specify a path, the function uses a standard search strategy 
-		 * to find the file.
-		 * 
-		 * Return
-		 * A handle to the module indicates success. NULL indicates failure.
-		 * 
-		 * LoadLibrary can be used to doing the following:
-		 * 		1. Map a DLL module and return a handle that can be used in GetProcAddress 
-		 * 		to get the address of a DLL function. 
-		 * 		You need to use FreeLibrary on the handle later.
-		 * 		2. Map other executable modules. For example, the function can specify an .exe file 
-		 * 		to get a handle that can be used in FindResource or LoadResource.
-		 * 
-		 * Do not use LoadLibrary to run a .exe file. Use the CreateProcess function.
-		 */
-		libHandle = LoadLibrary(libPath);
-	#else
-		/**
-		 * void *dlopen(const char *filename, int flags);
-		 * loads the dynamic shared object (shared library) file named by the null-terminated string filename
-		 * returns an opaque "handle" for the loaded object
-		 * 
-		 * RTLD_NOW :: Relocations are performed when the object is loaded.
-		 * 
-		 * If dlopen() fails for any reason, it returns NULL. 
-		 * 
-		 */
-
-		libHandle = dlopen(libPath, RTLD_NOW);
-	#endif
+	/**
+	 * void *dlopen(const char *filename, int flags);
+	 * 
+	 * loads the dynamic shared object (shared library) file named by the null-terminated 
+	 * string filename.
+	 * returns an opaque "handle" for the loaded object
+	 * 
+	 * RTLD_NOW :: Relocations are performed when the object is loaded.
+	 * If dlopen() fails for any reason, it returns NULL.
+	 * 
+	 * */
+	libHandle = dlopen(libPath, RTLD_NOW);
 
 	if (!libHandle) {
 		cout << "Error, failed to load SoftHSM library into memory from path " << libPath << endl;
 		return 3;
 	}
 
-	#ifdef WIN
-		CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList)GetProcAddress(libHandle,"C_GetFunctionList");
-		// CK_C_GetFunctionList C_GetFunctionList = reinterpret_cast<CK_C_GetFunctionList> (GetProcAddress(libHandle, "C_GetFunctionList"));
-	#else
+	/**
+	 * char *dlerror(void);
+	 * 
+	 * The function dlerror() returns a human readable string describing the most recent error 
+	 * that occurred from dlopen(), dlsym() or dlclose() since the last call to dlerror(). 
+	 * It returns NULL if no errors have occurred since initialization or since it was last called. 
+	 * 
+	 * */    
+	dlerror();	// This call is required before calling dlsym() to clear any existing error
 
-		/**
-		 * char *dlerror(void);
-		 * 
-		 * The function dlerror() returns a human readable string describing the most recent error 
-		 * that occurred from dlopen(), dlsym() or dlclose() since the last call to dlerror(). 
-		 * It returns NULL if no errors have occurred since initialization or since it was last called. 
-		 * 
-		*/    
-		dlerror();	// This call is required before calling dlsym() to clear any existing error
+	/**
+	 * dlsym, dlvsym - obtain address of a symbol in a shared object or executable
+	 * 
+	 * void *dlsym(void *restrict handle, const char *restrict symbol);
+	 * 
+	 * The function dlsym() takes a "handle" of a dynamic library returned by dlopen() 
+	 * and the null-terminated symbol name, returning the address where that symbol is 
+	 * loaded into memory. If the symbol is not found, in the specified library or 
+	 * any of the libraries that were automatically loaded by dlopen() when that library 
+	 * was loaded, dlsym() returns NULL. (The search performed by dlsym() is breadth first 
+	 * through the dependency tree of these libraries.) Since the value of the symbol could actually 
+	 * be NULL (so that a NULL return from dlsym() need not indicate an error), 
+	 * the correct way to test for an error is to call dlerror() to clear any old error conditions, 
+	 * then call dlsym(), and then call dlerror() again, saving its return value into a variable, 
+	 * and check whether this saved value is not NULL. 
+	 * 
+	 * On success, these functions return the address associated with symbol. 
+	 * On failure, they return NULL; the cause of the error can be diagnosed using dlerror(3).
+	 * */
 
-		/**
-		 * dlsym, dlvsym - obtain address of a symbol in a shared object or executable
-		 * 
-		 * void *dlsym(void *restrict handle, const char *restrict symbol);
-		 * 
-		 * The function dlsym() takes a "handle" of a dynamic library returned by dlopen() 
-		 * and the null-terminated symbol name, returning the address where that symbol is 
-		 * loaded into memory. If the symbol is not found, in the specified library or 
-		 * any of the libraries that were automatically loaded by dlopen() when that library 
-		 * was loaded, dlsym() returns NULL. (The search performed by dlsym() is breadth first 
-		 * through the dependency tree of these libraries.) Since the value of the symbol could actually 
-		 * be NULL (so that a NULL return from dlsym() need not indicate an error), 
-		 * the correct way to test for an error is to call dlerror() to clear any old error conditions, 
-		 * then call dlsym(), and then call dlerror() again, saving its return value into a variable, 
-		 * and check whether this saved value is not NULL. 
-		 * 
-		 * On success, these functions return the address associated with symbol. 
-		 * On failure, they return NULL; the cause of the error can be diagnosed using dlerror(3).
-		*/
-
-		// CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
-		CK_C_GetFunctionList C_GetFunctionList = reinterpret_cast<CK_C_GetFunctionList> (dlsym(libHandle, "C_GetFunctionList"));
-		libError = dlerror();		// Recommended to save dlerror() return value
-		if (libError) {
-			cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
-			return 3;
-		}
-	#endif
+	// CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList) dlsym(libHandle, "C_GetFunctionList");
+	CK_C_GetFunctionList C_GetFunctionList = reinterpret_cast<CK_C_GetFunctionList> (dlsym(libHandle, "C_GetFunctionList"));
+	libError = dlerror();		// Recommended to save dlerror() return value
+	if (libError) {
+		cout << "Error, dlsym() failed to find loaded SoftHSM library" << endl;
+		return 3;
+	}
+	
 	
     /**
 	 * CK_RV C_GetFunctionList(CK_FUNCTION_LIST_PTR_PTR);
@@ -203,23 +158,16 @@ int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
 	cout << "Clean up and free the resources\n";
-	#ifdef WIN
-		/**
-		 * 
-		 */
-		FreeLibrary(libHandle);
-	#else
-		/**
-		 * int dlclose(void *handle); 
-		 * The function dlclose() decrements the reference count on the dynamic library handle. 
-		 * If the reference count drops to zero and no other loaded libraries use symbols in it, 
-		 * then the dynamic library is unloaded.
-		 * The function dlclose() returns 0 on success, and nonzero on error. 
-		*/
-		if (dlclose(libHandle)) {
-			cout << "Error, dlclose() on softHSM library reference count\n";
-		}
-	#endif
-
+	/**
+	 * int dlclose(void *handle); 
+	 * The function dlclose() decrements the reference count on the dynamic library handle. 
+	 * If the reference count drops to zero and no other loaded libraries use symbols in it, 
+	 * then the dynamic library is unloaded.
+	 * The function dlclose() returns 0 on success, and nonzero on error. 
+	*/
+	if (dlclose(libHandle)) {
+		cout << "Error, dlclose() on softHSM library reference count\n";
+	}
+	
     funclistPtr = NULL_PTR;
 }
