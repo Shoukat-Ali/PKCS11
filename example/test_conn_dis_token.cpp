@@ -22,7 +22,7 @@
  *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ConnDis -I../include
  * 
  * On Windows
- * 		g++ -Wall -Werror test_conn_dis_token.cpp ..\source\conn_dis_token.cpp ..\source\basic_operation.cpp -o test_ConnDis.exe -I../include -DWIN
+ * 		g++ -Wall -Werror test_conn_dis_token.cpp ..\source\conn_dis_token.cpp ..\source\win_basic_operation.cpp -o test_ConnDis.exe -I../include -DWIND
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -34,7 +34,7 @@
 
 
 #include <iostream>
-#ifdef WIN
+#ifdef WIND
 	#include <windows.h>
 	#include "..\header\win_basic_operation.hpp"
 #else
@@ -48,7 +48,7 @@ using std::cout;
 int main()
 {
 	int retVal = 0;
-	#ifdef WIN
+	#ifdef WIND
 		/**
 		 * HINSTANCE is the handle to an instance or handle to a module. 
 		 * The operating system uses this value to identify the executable or EXE 

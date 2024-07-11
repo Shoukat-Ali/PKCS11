@@ -22,7 +22,7 @@ int load_library_HSM(HINSTANCE& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 int check_operation(const CK_RV rv, const char* message);
 
-void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
+void free_resource(HINSTANCE& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
 
 /**

@@ -1,5 +1,6 @@
+#include "..\header\win_basic_operation.hpp"
+#include <iostream>
 #include <windows.h>	// On Windows, required for WinAPI
-#include "..\header\conn_dis_token.hpp"
 
  
 
@@ -40,7 +41,6 @@ int check_operation(const CK_RV rv, const char* message)
 */
 int load_library_HSM(HINSTANCE& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
-	char* libError;
 	/**
 	 * Instead of reading the SoftHSM full path from user every time,
 	 * it's better to set an environment variable 
@@ -128,7 +128,7 @@ int load_library_HSM(HINSTANCE& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
  * 
  * The function does not return anything 
 */
-void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
+void free_resource(HINSTANCE& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr)
 {
 	cout << "Clean up and free the resources\n";
 	/**
