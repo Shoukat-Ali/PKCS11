@@ -39,7 +39,22 @@ using std::cout;
 int main()
 {
 	int retVal = 0;
-	void *libHandle = nullptr;
+	#ifdef WIN
+		/**
+		 * HINSTANCE is the handle to an instance or handle to a module. 
+		 * The operating system uses this value to identify the executable or EXE 
+		 * when it's loaded in memory. Certain Windows functions need the instance handle, 
+		 * for example to load icons or bitmaps.
+		 * 
+		 * HINSTANCE is a handle to identify your application for others WINAPI calls. 
+		 * But actually, it is not even to identify your application from other instances, 
+		 * but to identify it from others applications executable files inside 
+		 * your applications e.g., DLLs.
+		 */
+		HINSTANCE libHandle = 0;
+	#else
+		void *libHandle = nullptr;
+	#endif
 
 	/**
 	 * CK_* represents Data type or general constant
