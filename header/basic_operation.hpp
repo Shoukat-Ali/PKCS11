@@ -13,6 +13,7 @@
 #ifndef BASIC_OPERATION_HPP
 #define BASIC_OPERATION_HPP
 
+#include <iostream>
 #include <cryptoki.h>   // exist in include directory in the same program directory with gcc use -I/path/to/include
 
 
