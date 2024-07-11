@@ -18,7 +18,11 @@
  *      make clean_test_ConnDis
  * 
  * To build the program in the example directory, one can run the following command
+ * On Linux
  *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ConnDis -I../include
+ * 
+ * On Windows
+ * 		g++ -Wall -Werror test_conn_dis_token.cpp ..\source\conn_dis_token.cpp ..\source\basic_operation.cpp -o test_ConnDis.exe -I../include -DWIN
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -30,7 +34,12 @@
 
 
 #include <iostream>
-#include "../header/basic_operation.hpp"
+#ifdef WIN
+	#include <windows.h>
+	#include "..\header\win_basic_operation.hpp"
+#else
+	#include "../header/basic_operation.hpp"
+#endif
 #include "../header/conn_dis_token.hpp"
 
 using std::cout;
@@ -78,6 +87,7 @@ int main()
 	std::string usrPIN;
 	
 	if (!(retVal = load_library_HSM(libHandle, funclistPtr))) {
+	// if (!retVal) {
 		cout << "HSM PKCS #11 library loaded successfully\n";
 		if (!(retVal = connect_slot(funclistPtr, hSession, usrPIN))) {
 			cout << "Connected to token successfully\n";
