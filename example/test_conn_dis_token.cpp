@@ -22,7 +22,7 @@
  *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ConnDis -I../include
  * 
  * On Windows
- * 		g++ -Wall -Werror test_conn_dis_token.cpp ..\source\conn_dis_token.cpp ..\source\win_basic_operation.cpp -o test_ConnDis.exe -I../include -DWIND
+ * 		g++ -Wall -Werror test_conn_dis_token.cpp ..\source\conn_dis_token.cpp ..\source\win_basic_operation.cpp ..\source\common_basic_operation.cpp -o test_ConnDis.exe -I../include -DWIND
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -37,8 +37,10 @@
 #ifdef WIND
 	#include <windows.h>
 	#include "..\header\win_basic_operation.hpp"
+	#include "..\header\common_basic_operation.hpp"
 #else
 	#include "../header/basic_operation.hpp"
+	#include "../header/common_basic_operation.hpp"
 #endif
 #include "../header/conn_dis_token.hpp"
 
