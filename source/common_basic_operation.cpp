@@ -1,9 +1,10 @@
-#include <iostream>
 #ifdef WIND
-    #include "..\header\common_basic_operaiton.hpp"
+    #include "..\header\common_basic_operation.hpp"
 #else
-    #include "../header/common_basic_operaiton.hpp"
-#endif 
+    #include "../header/common_basic_operation.hpp"
+#endif
+#include <iostream>
+ 
 
 /**
  * The function checks if a requested Cryptoki (PKCS #11) operation was a success or not.
@@ -23,5 +24,4 @@ int check_operation(const CK_RV rv, const char* message)
 	}
 	return 0;
 }
-
 
