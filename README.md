@@ -76,3 +76,31 @@ If the OpenSC installation was successful, then you should be able to see the pk
 ```
 man pkcs11-tool
 ```
+
+## MS Windows
+The programs were compiled and executed on Window 10 Pro, therefore, please perform the following steps in order. First, download SoftHSM2 for Windows and install it on your machine using the following github link
+
+https://github.com/disig/SoftHSM2-for-Windows?tab=readme-ov-file
+
+Next, for OpenSC on Windows, using the following link
+
+https://github.com/OpenSC/OpenSC
+
+Note that, in order to use softHSM2 and OpenSC in cmd.exe (Command Prompt), please add the followings to path environment variable 
+```
+C:\path\to\OpenSC\tools
+C:\path\to\SoftHSM2\bin
+```
+
+One can also add the SoftHSM library path to cmd.exe by adding the following to path environment variable
+```
+C:\path\to\SoftHSM2\lib
+```
+
+Finally, to confirm softHSM2 has been added to path environment variable, please use one of the following commands in cmd.exe
+```
+path
+softhsm2-util --version 
+```
+
+Don't forget to download code editor or IDE of your choice. For Windows, we are using TDM-GCC 10.3.0 compiler suite. Moreover, don't forget to set SOFTHSM2_LIB environment variable for the programs.
