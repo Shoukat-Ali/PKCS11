@@ -19,28 +19,7 @@
 
 int load_library_HSM(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
 
-int check_operation(const CK_RV rv, const char* message);
-
 void free_resource(void*& libHandle, CK_FUNCTION_LIST_PTR& funclistPtr);
-
-
-/**
- * This function checks whether a given pointer is null or not.
- * 
- * ptr is a constant pointer to void type
- * 
- * If given pointer is null, then return true. Otherwise, faluse is returned.
- * 
-*/
-inline bool is_nullptr(void * const ptr)
-{
-	if (ptr) {
-		return false;
-	}
-	std::cout << "Error, pointer is NULL\n";
-	return true;
-}
-
 
 
 #endif

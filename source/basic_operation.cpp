@@ -1,33 +1,12 @@
 #include <iostream>
 #include <dlfcn.h>		// On Linux, required for dynamic loading, linking e.g., dlopen(), dlclose(), dlsym(), etc.
 #include "../header/basic_operation.hpp"
-
+#include "../header/common_basic_operation.hpp"
  
 
 using std::cout; 
 using std::cin;
 using std::endl;
-
-
-
-/**
- * The function checks if a requested Cryptoki (PKCS #11) operation was a success or not.
- * 
- * rv represents the CK_RV value returned by Cryptoki function
- * message represent the Cryptoki operation 
- * 
- * If the CK_RV value is CKR_OK, then the operation was success and 0 is returned. 
- * Otherwise, non-zero integer is returned on failure.
- *  
-*/
-int check_operation(const CK_RV rv, const char* message)
-{
-	if (rv != CKR_OK) {
-		cout << "Error, " << message << " failed with RV : " << rv << endl;
-		return 1;
-	}
-	return 0;
-}
 
 
 
