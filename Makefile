@@ -75,7 +75,7 @@ MAIN_RSAOAEP = $(addprefix $(MAIN_DIR),test_RSA_OAEP_enc_dec.cpp)
 #Object files
 OBJS_BSCOPR = src_BscOpr.o
 OBJS_COMNOPR = src_ComnOpr.o
-OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o src_BscOpr.o
+OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o src_BscOpr.o src_ComnOpr.o
 OBJS_STLIST = main_STList.o src_STList.o src_BscOpr.o src_ComnOpr.o
 OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o src_ConnDis.o src_BscOpr.o
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o src_ConnDis.o src_BscOpr.o
