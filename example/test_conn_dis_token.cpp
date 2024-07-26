@@ -35,7 +35,6 @@
 
 #include <iostream>
 #ifdef WIND
-	#include <windows.h>
 	#include "..\header\win_basic_operation.hpp"
 	#include "..\header\common_basic_operation.hpp"
 #else
