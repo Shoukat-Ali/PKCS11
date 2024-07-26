@@ -15,9 +15,13 @@ CXX11 = -std=c++11
 CXX17 = -std=c++17
 
 
-# Connect to and disconnect from a token
+# Basic operations of loading and un-loading library
 HDR_BSCOPR = $(addprefix $(HEADER_DIR),basic_operation.hpp)
 SRC_BSCOPR = $(addprefix $(SRC_DIR),basic_operation.cpp)
+
+# Common basic operations e.g., null pointer check, operation status, etc.
+HDR_COMNOPR = $(addprefix $(HEADER_DIR),common_basic_operation.hpp)
+SRC_COMNOPR = $(addprefix $(SRC_DIR),common_basic_operation.cpp)
 
 
 # Connect to and disconnect from a token
@@ -70,8 +74,9 @@ MAIN_RSAOAEP = $(addprefix $(MAIN_DIR),test_RSA_OAEP_enc_dec.cpp)
 
 #Object files
 OBJS_BSCOPR = src_BscOpr.o
+OBJS_COMNOPR = src_ComnOpr.o
 OBJS_CONNDIS = main_ConnDis.o src_ConnDis.o src_BscOpr.o
-OBJS_STLIST = main_STList.o src_STList.o src_BscOpr.o
+OBJS_STLIST = main_STList.o src_STList.o src_BscOpr.o src_ComnOpr.o
 OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o src_ConnDis.o src_BscOpr.o
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o src_ConnDis.o src_BscOpr.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o src_ConnDis.o src_BscOpr.o
@@ -80,11 +85,14 @@ OBJS_RSAKEYPAIR = main_RSAKeypair.o src_RSAKeypair.o src_ConnDis.o src_BscOpr.o
 OBJS_RSAOAEP = main_RSAOAEP.o src_RSAOAEP.o src_RSAKeypair.o src_ConnDis.o src_BscOpr.o
 
 
-# Basic common operations 
+# Basic operations of loading and un-loading library  
 src_BscOpr.o: $(SRC_BSCOPR) $(HDR_BSCOPR)
 	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 
+# Common operations e.g., null pointer check, operation status, etc. 
+src_ComnOpr.o: $(SRC_COMNOPR) $(HDR_COMNOPR)
+	$(CXX) $(BSCFLAGS) $(GDBFLAG) $(OPTZFLAG) $(CXX11) $< -o $@
 
 
 # Connect to and disconnect from a token
