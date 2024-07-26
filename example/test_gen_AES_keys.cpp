@@ -20,7 +20,11 @@
  *      make clean_test_AESKeys
  * 
  * To build the program in the example directory, one can run the following command
+ * On Linux
  *      g++ -Wall -Werror test_gen_AES_keys.cpp ../source/gen_AES_keys.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_AESKeys -I../include
+ * 
+ * On Windows
+ * 		g++ -Wall -Werror test_gen_AES_keys.cpp ..\source\gen_AES_keys.cpp ..\source\conn_dis_token.cpp ..\source\common_basic_operation.cpp ..\source\win_basic_operation.cpp -o test_AESKeys.exe -I../include -DWIND
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -48,9 +52,16 @@
 
 #include <iostream>
 #include <limits>
-#include "../header/basic_operation.hpp"
-#include "../header/conn_dis_token.hpp"
-#include "../header/gen_AES_keys.hpp"
+#ifdef WIND
+	#include "..\header\win_basic_operation.hpp"
+	#include "..\header\conn_dis_token.hpp"
+	#include "..\header\gen_AES_keys.hpp"
+#else
+	#include "../header/basic_operation.hpp"
+	#include "../header/conn_dis_token.hpp"
+	#include "../header/gen_AES_keys.hpp"
+#endif
+
 
 
 using std::cout;
@@ -64,7 +75,12 @@ int main()
 {
 	int retVal = 0;
 	int choice = -1;
-	void *libHandle = nullptr;
+	#ifdef WIND
+		HINSTANCE libHandle = 0;
+	#else
+		void *libHandle = nullptr;
+	#endif
+	
 	CK_FUNCTION_LIST_PTR funclistPtr = NULL_PTR;
 	CK_SESSION_HANDLE hSession = 0; 
 	std::string usrPIN;
