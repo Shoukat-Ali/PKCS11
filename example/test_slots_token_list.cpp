@@ -28,7 +28,11 @@
  *      make clean_test_STList
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_slots_token_list.cpp ../source/slots_token_list.cpp ../source/basic_operation.cpp -o test_STList -I../include
+ * On Linux
+ *      g++ -Wall -Werror test_slots_token_list.cpp ../source/slots_token_list.cpp ../source/basic_operation.cpp ../source/common_basic_operation.cpp -o test_STList -I../include
+ * 
+ * On Windows
+ * 		g++ -Wall -Werror test_slots_token_list.cpp ..\source\slots_token_list.cpp ..\source\win_basic_operation.cpp ..\source\common_basic_operation.cpp -o test_STList.exe -I../include -DWIND
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -38,8 +42,14 @@
 
 
 #include <iostream>
-#include "../header/basic_operation.hpp"
-#include "../header/slots_token_list.hpp"
+#ifdef WIND
+	#include "..\header\win_basic_operation.hpp"
+	#include "..\header\slots_token_list.hpp"
+#else
+	#include "../header/basic_operation.hpp"
+	#include "../header/slots_token_list.hpp"
+#endif
+
 
 using std::cout;
 
@@ -47,7 +57,23 @@ using std::cout;
 int main()
 {
 	int retVal = 0;
-	void *libHandle = nullptr;
+	#ifdef WIND
+		/**
+		 * HINSTANCE is the handle to an instance or handle to a module. 
+		 * The operating system uses this value to identify the executable or EXE 
+		 * when it's loaded in memory. Certain Windows functions need the instance handle, 
+		 * for example to load icons or bitmaps.
+		 * 
+		 * HINSTANCE is a handle to identify your application for others WINAPI calls. 
+		 * But actually, it is not even to identify your application from other instances, 
+		 * but to identify it from others applications executable files inside 
+		 * your applications e.g., DLLs.
+		 */
+		HINSTANCE libHandle = 0;
+	#else
+		void *libHandle = nullptr;
+	#endif
+	
 	
 	CK_FUNCTION_LIST_PTR funclistPtr = NULL_PTR;
 	

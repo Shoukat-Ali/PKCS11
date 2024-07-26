@@ -1,6 +1,12 @@
 #include <iostream>
-#include "../header/basic_operation.hpp"
-#include "../header/slots_token_list.hpp"
+#ifdef WIND
+	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\slots_token_list.hpp"
+#else
+	#include "../header/common_basic_operation.hpp"
+	#include "../header/slots_token_list.hpp"
+#endif
+
  
 
 using std::cout; 
