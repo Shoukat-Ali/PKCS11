@@ -21,7 +21,7 @@
  * 
  * To build the program in the example directory, one can run the following command
  * On Linux
- *      g++ -Wall -Werror test_gen_AES_keys.cpp ../source/gen_AES_keys.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_AESKeys -I../include
+ *      g++ -Wall -Werror test_gen_AES_keys.cpp ../source/gen_AES_keys.cpp ../source/conn_dis_token.cpp ../source/common_basic_operation.cpp ../source/basic_operation.cpp -o test_AESKeys -I../include
  * 
  * On Windows
  * 		g++ -Wall -Werror test_gen_AES_keys.cpp ..\source\gen_AES_keys.cpp ..\source\conn_dis_token.cpp ..\source\common_basic_operation.cpp ..\source\win_basic_operation.cpp -o test_AESKeys.exe -I../include -DWIND
