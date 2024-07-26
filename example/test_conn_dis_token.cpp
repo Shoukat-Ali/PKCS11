@@ -19,7 +19,7 @@
  * 
  * To build the program in the example directory, one can run the following command
  * On Linux
- *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ConnDis -I../include
+ *      g++ -Wall -Werror test_conn_dis_token.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp ../source/common_basic_operation.cpp -o test_ConnDis -I../include
  * 
  * On Windows
  * 		g++ -Wall -Werror test_conn_dis_token.cpp ..\source\conn_dis_token.cpp ..\source\win_basic_operation.cpp ..\source\common_basic_operation.cpp -o test_ConnDis.exe -I../include -DWIND
