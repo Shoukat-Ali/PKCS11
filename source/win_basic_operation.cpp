@@ -1,8 +1,6 @@
+#include <iostream>
 #include "..\header\common_basic_operation.hpp"
 #include "..\header\win_basic_operation.hpp"
-#include <iostream>
-#include <windows.h>	// On Windows, required for WinAPI
-
  
 
 using std::cout; 

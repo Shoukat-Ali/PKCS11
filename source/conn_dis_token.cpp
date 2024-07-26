@@ -1,7 +1,12 @@
 #include <iostream>
 #include <limits>
-#include "../header/basic_operation.hpp"
-#include "../header/conn_dis_token.hpp"
+#ifdef WIND
+	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\conn_dis_token.hpp"
+#else
+	#include "../header/common_basic_operation.hpp"
+	#include "../header/conn_dis_token.hpp"
+#endif
  
 
 using std::cout; 

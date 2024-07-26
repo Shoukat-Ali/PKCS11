@@ -1,10 +1,9 @@
+#include <iostream>
 #ifdef WIND
     #include "..\header\common_basic_operation.hpp"
 #else
     #include "../header/common_basic_operation.hpp"
-#endif
-#include <iostream>
- 
+#endif 
 
 /**
  * The function checks if a requested Cryptoki (PKCS #11) operation was a success or not.

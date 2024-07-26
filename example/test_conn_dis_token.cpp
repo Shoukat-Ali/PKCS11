@@ -36,12 +36,12 @@
 #include <iostream>
 #ifdef WIND
 	#include "..\header\win_basic_operation.hpp"
-	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\conn_dis_token.hpp"
 #else
 	#include "../header/basic_operation.hpp"
-	#include "../header/common_basic_operation.hpp"
+	#include "../header/conn_dis_token.hpp"
 #endif
-#include "../header/conn_dis_token.hpp"
+
 
 using std::cout;
 
