@@ -1,7 +1,15 @@
 #include <iostream>
 #include <iterator>
-#include "../header/basic_operation.hpp"
-#include "../header/gen_AES_keys.hpp" 
+#ifdef WIND
+	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\gen_AES_keys.hpp"
+    #include "..\header\AES_enc_dec.hpp"
+#else
+	#include "../header/common_basic_operation.hpp"
+	#include "../header/gen_AES_keys.hpp"
+    #include "../header/AES_enc_dec.hpp"
+#endif
+
 
 using std::cout; 
 
