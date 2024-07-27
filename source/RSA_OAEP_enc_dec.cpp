@@ -1,6 +1,12 @@
 #include <iostream>
-#include "../header/basic_operation.hpp"
-#include "../header/RSA_OAEP_enc_dec.hpp"
+#ifdef WIND
+	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\RSA_OAEP_enc_dec.hpp"
+#else
+	#include "../header/common_basic_operation.hpp"
+	#include "../header/RSA_OAEP_enc_dec.hpp"
+#endif
+
 
 /**
  * CK_RSA_PKCS_OAEP_PARAMS is a structure that provides the parameters to the
