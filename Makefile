@@ -81,7 +81,7 @@ OBJS_ECKEYPAIR = main_ECKeypair.o src_ECKeypair.o src_ConnDis.o $(OBJS_BSCOPR) $
 OBJS_ECDSA = main_ECDSA.o src_ECDSA.o src_ConnDis.o src_BscOpr.o
 OBJS_AESKEYS = main_AESKeys.o src_AESKeys.o src_ConnDis.o $(OBJS_BSCOPR) $(OBJS_COMNOPR)
 OBJS_AESENCDEC = main_AESEncDec.o src_AESEncDec.o src_AESKeys.o src_ConnDis.o $(OBJS_BSCOPR) $(OBJS_COMNOPR)
-OBJS_RSAKEYPAIR = main_RSAKeypair.o src_RSAKeypair.o src_ConnDis.o src_BscOpr.o
+OBJS_RSAKEYPAIR = main_RSAKeypair.o src_RSAKeypair.o src_ConnDis.o $(OBJS_BSCOPR) $(OBJS_COMNOPR)
 OBJS_RSAOAEP = main_RSAOAEP.o src_RSAOAEP.o src_RSAKeypair.o src_ConnDis.o src_BscOpr.o
 
 

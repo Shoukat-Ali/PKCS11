@@ -1,6 +1,11 @@
 #include <iostream>
-#include "../header/basic_operation.hpp"
-#include "../header/gen_RSA_keypair.hpp"
+#ifdef WIND
+	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\gen_RSA_keypair.hpp"
+#else
+	#include "../header/common_basic_operation.hpp"
+	#include "../header/gen_RSA_keypair.hpp"
+#endif
 
 
 /**
