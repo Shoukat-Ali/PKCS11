@@ -1,6 +1,12 @@
 #include <iostream>
-#include "../header/basic_operation.hpp"
-#include "../header/gen_EC_keypair.hpp" 
+#ifdef WIND
+	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\gen_EC_keypair.hpp"
+#else
+	#include "../header/common_basic_operation.hpp"
+	#include "../header/gen_EC_keypair.hpp"
+#endif
+
 
 
 
