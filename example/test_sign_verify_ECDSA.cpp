@@ -21,7 +21,11 @@
  *      make clean_test_ECDSA
  * 
  * To build the program in the example directory, one can run the following command
- *      g++ -Wall -Werror test_sign_verify_ECDSA.cpp ../source/sign_verify_ECDSA.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp -o test_ECDSA -I../include
+ * On Linux
+ *      g++ -Wall -Werror test_sign_verify_ECDSA.cpp ../source/sign_verify_ECDSA.cpp ../source/conn_dis_token.cpp ../source/basic_operation.cpp ../source/common_basic_operation.cpp -o test_ECDSA -I../include
+ * 
+ * On Windows
+ * 
  * 
  * To see the list of slots, run the following command
  *      softhsm2-util --show-slots
@@ -49,9 +53,15 @@
 
 #include <iostream>
 #include <limits>
-#include "../header/basic_operation.hpp"
-#include "../header/conn_dis_token.hpp"
-#include "../header/sign_verify_ECDSA.hpp"
+#ifdef WIND
+	#include "..\header\win_basic_operation.hpp"
+	#include "..\header\conn_dis_token.hpp"
+	#include "..\header\sign_verify_ECDSA.hpp"
+#else
+	#include "../header/basic_operation.hpp"
+	#include "../header/conn_dis_token.hpp"
+	#include "../header/sign_verify_ECDSA.hpp"
+#endif
 
 
 using std::cout;
@@ -75,7 +85,12 @@ int main()
 {
 	int retVal = 0;
 	int choice = -1;
-	void *libHandle = nullptr;
+	#ifdef WIND
+		HINSTANCE libHandle = 0;
+	#else
+		void *libHandle = nullptr;
+	#endif
+
 	CK_FUNCTION_LIST_PTR funclistPtr = NULL_PTR;
 	CK_SESSION_HANDLE hSession = 0; 
 	std::string usrPIN;

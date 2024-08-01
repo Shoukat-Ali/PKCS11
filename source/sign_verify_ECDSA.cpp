@@ -1,7 +1,13 @@
 #include <iostream>
 #include <limits>
-#include "../header/basic_operation.hpp"
-#include "../header/sign_verify_ECDSA.hpp" 
+#ifdef WIND
+	#include "..\header\common_basic_operation.hpp"
+	#include "..\header\sign_verify_ECDSA.hpp"
+#else
+	#include "../header/common_basic_operation.hpp"
+	#include "../header/sign_verify_ECDSA.hpp"
+#endif
+
 
 using std::cout; 
 
